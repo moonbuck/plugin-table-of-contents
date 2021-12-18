@@ -1,0 +1,23 @@
+{{- $source_dir := "js/plugin-toc/" -}}
+{{- $template_name := "toc.js" -}}
+{{- $source := path.Join $source_dir $template_name -}}
+{{- $target := path.Join "assets" $source -}}
+
+{{- $script := resources.Get $source | resources.ExecuteAsTemplate $target . -}}
+
+{{- print "\n" -}}
+<script src="{{ $script.Permalink }}"></script>
+
+{{- $source_dir = "sass/plugin-toc/" -}}
+{{- $template_name = "toc.scss" -}}
+{{- $source = path.Join $source_dir $template_name -}}
+{{- $target := path.Join "assets" $source -}}
+{{- $style := resources.Get $source | resources.ExecuteAsTemplate $target . -}} 
+
+{{- $target = $target | replaceRE "sass|scss" "css" -}}
+{{- $options := dict "targetPath" $target  "outputStyle" "nested" -}}
+{{- $style = $style | toCSS $options -}}
+
+{{- print "\n" -}}
+<link rel="stylesheet" href="{{ $style.Permalink }}">
+{{ end -}}
