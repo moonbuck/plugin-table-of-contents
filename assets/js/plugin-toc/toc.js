@@ -36,6 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
   insertTOC(document.querySelector(TOC_CONTAINER_PARENT_SEL));
   insertTOCToggle(document.querySelector(TOC_TOGGLE_PARENT_SEL));
   
+  window.onhashchange = () => hideTOC();
+  
 });
 
 /*
@@ -91,6 +93,50 @@ function insertTOC(parent) {
   
   // Append the title to the header and the header to the container.
   header.append(title);
+  
+  let button = document.createElement('BUTTON');
+  button.id = TOC_CLOSE_BUTTON_ID;
+  button.type = 'button';
+  button.onclick = () => hideTOC();
+  
+  let svg = document.createElement('SVG');
+  svg.innerHTML = `\
+    <svg aria-hidden='true' 
+         focusable='false' 
+         data-prefix='fad' 
+         data-icon='window-close' 
+         class='svg-inline--fa fa-window-close fa-w-16' 
+         role='img' 
+         xmlns='http://www.w3.org/2000/svg' 
+         viewBox='0 0 512 512'>
+      <g class='fa-group'>
+        <path class='fa-secondary' 
+              fill='currentColor' 
+              d='M464 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 \
+              48h416a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48zm-83.6 \
+              290.5a12.31 12.31 0 0 1 0 17.4l-40.5 40.5a12.31 12.31 \
+              0 0 1-17.4 0L256 313.3l-66.5 67.1a12.31 12.31 0 0 \
+              1-17.4 0l-40.5-40.5a12.31 12.31 0 0 1 \
+              0-17.4l67.1-66.5-67.1-66.5a12.31 12.31 0 0 1 \
+              0-17.4l40.5-40.5a12.31 12.31 0 0 1 17.4 0l66.5 67.1 \
+              66.5-67.1a12.31 12.31 0 0 1 17.4 0l40.5 40.5a12.31 \
+              12.31 0 0 1 0 17.4L313.3 256z' opacity='0.4'>
+        </path>
+        <path class='fa-primary' 
+              fill='currentColor' 
+              d='M380.4 322.5a12.31 12.31 0 0 1 0 17.4l-40.5 \
+              40.5a12.31 12.31 0 0 1-17.4 0L256 313.3l-66.5 \
+              67.1a12.31 12.31 0 0 1-17.4 0l-40.5-40.5a12.31 \
+              12.31 0 0 1 0-17.4l67.1-66.5-67.1-66.5a12.31 12.31 \
+              0 0 1 0-17.4l40.5-40.5a12.31 12.31 0 0 1 17.4 0l66.5 \
+              67.1 66.5-67.1a12.31 12.31 0 0 1 17.4 0l40.5 \
+              40.5a12.31 12.31 0 0 1 0 17.4L313.3 256z'>
+        </path>
+      </g>
+    </svg>`
+  button.append(svg);
+  header.append(button);
+  
   container.append(header);
   
   // Create the <nav> element that will contain the links.
@@ -134,6 +180,7 @@ function insertTOC(parent) {
   
   // Initialize the property storing the state.
   document[TOC_VISIBLE] = false;
+  
 }
 
 /*
@@ -159,7 +206,7 @@ function insertTOCToggle(parent) {
   
   // Configure the button action.
   button.onclick = () => document[TOC_VISIBLE] ? hideTOC() : showTOC();
-  
+    
   // Prepend the button.
   parent.prepend(button);
   
@@ -215,4 +262,4 @@ function hideTOC() {
   // Update the property storing the state.
   document[TOC_VISIBLE] = false;
   
-}
+  }

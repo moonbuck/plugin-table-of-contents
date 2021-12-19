@@ -59,6 +59,7 @@ $toc-border-color: rgba(black, .2);
 button##{$toc-toggle-id} {
   background: transparent;
   border: none;
+  transform: rotate(-90deg);
 }
 
 ##{$toc-container-id} {
@@ -98,6 +99,25 @@ button##{$toc-toggle-id} {
       margin-top: $toc-padding-y * -.5;
       margin-right: $toc-padding-x * -.5;
       margin-bottom: $toc-padding-y * -.5;
+      background: transparent;
+      border: none;
+      
+      /*!
+       * Font Awesome Pro 5.15.4 by @fontawesome - 
+       * https://fontawesome.com
+       * License - https://fontawesome.com/license (Commercial License)
+       */
+      .svg-inline--fa {
+        display: inline-block;
+        font-size: inherit;
+        height: 1em;
+        overflow: visible;
+        align-self: baseline;
+        vertical-align: baseline;
+        fill: lightgray;
+        
+        &.fa-secondary { opacity: 0.4; }
+      }
     }
   }
 
