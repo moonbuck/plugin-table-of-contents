@@ -11,21 +11,22 @@ $fade-class-name: {{ .FadeClassName }};
 $show-class-name: {{ .ShowClassName }};
 {{ end }}
 
-$indent: 2em;
-
-$toc-color: null;
-$toc-bg-color: white;
-$toc-transition-duration: .3s;
-$zindex-toc-backdrop: 1040;
-$zindex-toc: 1045;
-$toc-backdrop-bg: black;
-$toc-backdrop-opacity: 0.5;
-$toc-padding-y: 1rem;
-$toc-padding-x: 1rem;
-$toc-title-line-height: 1.5;
-$toc-horizontal-width: 400px;
-$toc-border-width: 1px;
-$toc-border-color: rgba(black, .2);
+{{ with (.Scratch.Get "plugin-toc.Parameters").TOC.Style }}
+$indent: {{ .Indent }};
+$toc-color: {{ .Color }};
+$toc-bg-color: {{ .BGColor }};
+$toc-transition-duration: {{ .TransitionDuration }};
+$zindex-toc-backdrop: {{ .Backdrop.ZIndex }};
+$zindex-toc: {{ .ZIndex }};
+$toc-backdrop-bg-color: {{ .Backdrop.BGColor }};
+$toc-backdrop-opacity: {{ .Backdrop.Opacity }};
+$toc-padding-y: {{ .Padding.Y }};
+$toc-padding-x: {{ .Padding.X }};
+$toc-title-line-height: {{ .TitleLineHeight }};
+$toc-width: {{ .Width }};
+$toc-border-width: {{ .Border.Width }};
+$toc-border-color: {{ .Border.Color }};
+{{ end }}
 
 ##{$toc-backdrop-id} {
   position: fixed;
@@ -33,7 +34,7 @@ $toc-border-color: rgba(black, .2);
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: $toc-backdrop-bg;
+  background-color: $toc-backdrop-bg-color;
 
   // Fade for backdrop
   &.#{$fade-class-name} { 
@@ -55,7 +56,7 @@ button##{$toc-toggle-id} {
 ##{$toc-container-id} {
   top: 0;
   left: 0;
-  width: $toc-horizontal-width;
+  width: $toc-width;
   border-right: $toc-border-width solid $toc-border-color;
   transform: translateX(-100%);
   position: fixed;

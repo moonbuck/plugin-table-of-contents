@@ -55,12 +55,21 @@ Color = 'null'
 BGColor = 'white'
 TransitionDuration = '.3s'
 ZIndex = 1045
-Padding.Y = '1rem'
-Padding.X = '1rem'
 TitleLineHeight = 1.5
 Width = '400px'
-Border.Width = '1px'
-Border.Color = 'rgba(black, .2)'
-Backdrop.ZIndex = 1040
-Backdrop.BGColor = 'black'
-Backdrop.Opacity = 0.5
+
+[TOC.Style.Padding]
+
+Y = '1rem'
+X = '1rem'
+
+[TOC.Style.Border]
+
+Width = '1px'
+Color = 'rgba(black, .2)'
+
+[TOC.Style.Backdrop]
+
+ZIndex = 1040
+BGColor = 'black'
+Opacity = 0.5
