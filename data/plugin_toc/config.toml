@@ -42,7 +42,7 @@ TitleText = 'Table of Contents'
 # Selector for identifying the HTML element into which the toggle
 # button shall be prepended.
 #
-ToggleParent = 'main'
+ToggleParent = '#toc-toggle'
 
 # The text displayed by the toggle button.
 #

@@ -30,13 +30,38 @@ const SHOW_CLASS_NAME = '{{ .ShowClassName }}';
 const TOC_BACKDROP_ELEMENT = Symbol(TOC_BACKDROP_ID);
 const TOC_CONTAINER_ELEMENT = Symbol(TOC_CONTAINER_ID);
 const TOC_VISIBLE = Symbol();
+const SWIPE_GESTURE = Symbol();
+const DRAG_GESTURE = Symbol();
 
 document.addEventListener('DOMContentLoaded', () => {
-    
+
   insertTOC(document.querySelector(TOC_CONTAINER_PARENT_SEL));
   insertTOCToggle(document.querySelector(TOC_TOGGLE_PARENT_SEL));
   
   window.onhashchange = () => hideTOC();
+  
+  const action = direction => {
+    console.log(`Swipe or drag detected: ${direction}`);
+    if (!document[TOC_VISIBLE] && direction === 'inLeft') {
+      showTOC();
+    } else if (document[TOC_VISIBLE] && direction === 'inRight') {
+      hideTOC();
+    }
+  }
+  
+  const edges = new Set([LEFT_EDGE]);
+  
+  if ( ('ontouchstart' in window)
+    || (navigator.maxTouchPoints > 0)
+    || (navigator.msMaxTouchPoints > 0)) 
+  {
+    document.body[SWIPE_GESTURE] = new SwipeGesture(document.body, action, edges);
+    document.body[DRAG_GESTURE] = new DragGesture(document.body, action, edges);
+  }
+  
+  else {
+    document.body[DRAG_GESTURE] = new DragGesture(document.body, action, edges);
+  }
   
 });
 
@@ -207,8 +232,8 @@ function insertTOCToggle(parent) {
   // Configure the button action.
   button.onclick = () => document[TOC_VISIBLE] ? hideTOC() : showTOC();
     
-  // Prepend the button.
-  parent.prepend(button);
+  // append the button.
+  parent.append(button);
   
 }
   
@@ -262,4 +287,179 @@ function hideTOC() {
   // Update the property storing the state.
   document[TOC_VISIBLE] = false;
   
+}
+
+class Touch {
+  
+  constructor() {    
+    this.isDown = false;
+    this.inLeft = false;
+    this.inRight = false;
+    this.timestamp = null;    
+  }
+  
+}
+
+class Mouse {
+  
+  constructor() {    
+    this.isDown = false;
+    this.inLeft = false;
+    this.inRight = false;
+    this.timestamp = null;    
+  }
+  
+}
+
+class Threshold {
+  
+  constructor(width, ms) {    
+    this.width = width;
+    this.start = 0.1 * width;
+    this.end = 0.13 * width;
+    this.ms = ms;    
+  }
+  
+  resize(width) {    
+    this.width = width;
+    this.start = 0.1 * width;
+    this.end = 0.13 * width;    
+  }
+  
+}
+
+const LEFT_EDGE = Symbol();
+const RIGHT_EDGE = Symbol();
+const EDGES = new Set([LEFT_EDGE, RIGHT_EDGE]);
+
+class SwipeGesture {
+  
+  constructor(element, action, edges = EDGES) {
+    
+    this.element = element;
+    this.action = action;
+    this.threshold = new Threshold(window.innerWidth, 500);
+    this.touch = new Touch();
+    this.edges = new Set([...edges].filter(edge => EDGES.has(edge)));
+    
+    document.addEventListener('resize', () => {      
+      this.threshold.resize(window.innerWidth)      
+    });
+    
+    element.addEventListener('touchstart', event => {
+      
+      let x = event.touches[0].pageX;
+      this.touch.isDown = true;
+      this.touch.timestamp = performance.now();
+      
+      if (this.edges.has(LEFT_EDGE) && x < this.threshold.start) {
+        this.touch.inLeft = true;
+      }
+      
+      else if (this.edges.has(RIGHT_EDGE) && x > this.threshold.width - this.threshold.start) {
+        this.touch.inRight = true;
+      }
+      
+    });
+    
+    element.addEventListener('touchmove', event => {
+      
+      let x = event.touches[0].pageX;
+      
+      if (this.touch.inLeft && x > this.threshold.end) {
+        this.touch.inLeft = false;
+        
+        if (performance.now() - this.touch.timestamp < this.threshold.ms) {
+          this._action?.('inLeft');
+        }
+      } 
+      
+      else if (this.touch.inRight && x < this.threshold.width - this.threshold.end) {
+        this.touch.inRight = false;
+        
+        if (performance.now() - this.touch.timestamp < this.threshold.ms) {
+          this._action?.('inRight');
+        }
+      }
+      
+    });
+
+    element.addEventListener('touchend', event => {
+      this.touch = new Touch();
+    });
+
+  }
+  
+  get action() { return _action; }
+  
+  set action(action) {
+    this._action = typeof action === 'function' ? action : null;
+  }
+    
+}
+
+class DragGesture {
+  
+  constructor(element, action, edges = EDGES) {
+    
+    this.element = element;
+    this.action = action;
+    this.threshold = new Threshold(window.innerWidth, 500);
+    this.mouse = new Mouse();
+    this.edges = new Set([...edges].filter(edge => EDGES.has(edge)));
+    
+    document.addEventListener('resize', () => {      
+      this.threshold.resize(window.innerWidth)      
+    });
+    
+    element.addEventListener('mousedown', event => {
+      
+      let x = event.pageX;
+      this.mouse.isDown = true;
+      this.mouse.timestamp = performance.now();
+      
+      if (this.edges.has(LEFT_EDGE) && x < this.threshold.start) {
+        this.mouse.inLeft = true;
+      }
+      
+      else if (this.edges.has(RIGHT_EDGE) && x > this.threshold.width - this.threshold.start) {
+        this.mouse.inRight = true;
+      }
+      
+    });
+    
+    element.addEventListener('mousemove', event => {
+      
+      let x = event.pageX;
+      
+      if (this.mouse.inLeft && x > this.threshold.end) {
+        this.mouse.inLeft = false;
+        
+        if (performance.now() - this.mouse.timestamp < this.threshold.ms) {
+          this._action?.('inLeft');
+        }
+      } 
+      
+      else if (this.mouse.inRight && x < this.threshold.width - this.threshold.end) {
+        this.mouse.inRight = false;
+        
+        if (performance.now() - this.mouse.timestamp < this.threshold.ms) {
+          this._action?.('inRight');
+        }
+      }
+      
+    });
+
+    element.addEventListener('mouseup', event => {
+      this.mouse = new Mouse();
+    });
+
+  }
+
+  get action() { return _action; }
+  
+  set action(action) {
+    this._action = typeof action === 'function' ? action : null;
+  }
+    
 }

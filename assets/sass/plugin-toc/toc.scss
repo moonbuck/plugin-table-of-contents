@@ -48,11 +48,11 @@ $toc-border-color: {{ .Border.Color }};
 }
 
 button##{$toc-toggle-id} {
-  background: transparent;
+  background: rgba(30,32,37,.5);
+  color: white;
   border: none;
-  transform: rotate(-90deg);
 }
-
+    
 ##{$toc-container-id} {
   top: 0;
   left: 0;
@@ -117,8 +117,8 @@ button##{$toc-toggle-id} {
     padding: $toc-padding-y $toc-padding-x;
     overflow-y: auto;
     display: flex;
-    flex-direction: column;
-      
+    flex-direction: column;    
+    
     a {
       
       &.#{$toc-level-class-prefix}2 {
@@ -136,5 +136,5 @@ button##{$toc-toggle-id} {
     }
     
   }
-
+  
 }
