@@ -1,0 +1,44 @@
+{{- /************************************************************ 
+  Resolves the config file parameter values inta a map and
+  inserts the map into the page scratch.
+  ************************************************************/ -}}
+
+{{- /* Resolve the config file provided to the plugin  */ -}}
+{{- $Config := site.Data.plugin_toc_config -}}
+{{- $Config  = $Config | default site.Data.plugin_toc.config -}}
+{{- $Config  = $Config | default dict -}}
+
+{{- /* 
+  
+  Resolve every possible parameter value since we can't trust
+  .Scratch.SetInMap not to blow itself up.
+  
+  */ -}}
+{{- $MinWordCount := $Config.MinWordCount | default 400 -}}
+{{- $Build_Fingerprint := $Config.Build.Fingerprint | default true -}}
+{{- $Build_SassOutput := $Config.Build.SassOutput | default "compact" -}}
+{{- $Build_MinifyScript := $Config.Build.MinifyScript | default false -}}
+{{- $TOC_SourceSandbox := $Config.TOC.SourceSandbox | default "#post-body" -}}
+{{- $TOC_ContainerParent := $Config.TOC.ContainerParent | default "main" -}}
+{{- $TOC_TitleText := $Config.TOC.TitleText | default "Table of Contents" -}}
+{{- $TOC_ToggleParent := $Config.TOC.ToggleParent | default "main" -}}
+{{- $TOC_ToggleText := $Config.TOC.ToggleText | default "Table of Contents" -}}
+
+{{- $TOC_Style_Indent := $Config.TOC.Style.Indent | default "2em" -}}
+{{- $TOC_Style_Color := $Config.TOC.Style.Color | default "null" -}}
+{{- $TOC_Style_BGColor := $Config.TOC.Style.BGColor | default "white" -}}
+{{- $TOC_Style_TransitionDuration := $Config.TOC.Style.TransitionDuration | default ".3s" -}}
+{{- $TOC_Style_ZIndex := $Config.TOC.Style.ZIndex | default 1045 -}}
+{{- $TOC_Style_Padding_Y := $Config.TOC.Style.Padding.Y | default "1rem" -}}
+{{- $TOC_Style_Padding_X := $Config.TOC.Style.Padding.X | default "1rem" -}}
+{{- $TOC_Style_TitleLineHeight := $Config.TOC.Style.TitleLineHeight | default 1.5 -}}
+{{- $TOC_Style_Width := $Config.TOC.Style.Width | default "400px" -}}
+{{- $TOC_Style_Border_Width := $Config.TOC.Style.Border.Width | default "1px" -}}
+{{- $TOC_Style_Border_Color := $Config.TOC.Style.Border.Color | default "rgba(black, .2)" -}}
+{{- $TOC_Style_Backdrop_ZIndex := $Config.TOC.Style.Backdrop.ZIndex | default 1040 -}}
+{{- $TOC_Style_Backdrop_BGColor := $Config.TOC.Style.Backdrop.BGColor | default "black" -}}
+{{- $TOC_Style_Backdrop_Opacity := $Config.TOC.Style.Backdrop.Opacity | default 0.5 -}}
+
+{{- $Parameters := dict "MinWordCount" $MinWordCount "Build" (dict "Fingerprint" $Build_Fingerprint "SassOutput" $Build_SassOutput "MinifyScript" $Build_MinifyScript) "TOC" (dict "SourceSandbox" $TOC_SourceSandbox "ContainerParent" $TOC_ContainerParent "TitleText" $TOC_TitleText "ToggleParent" $TOC_ToggleParent "ToggleText" $TOC_ToggleText "Style" (dict "Indent" $TOC_Style_Indent "Color" $TOC_Style_Color "BGColor" $TOC_Style_BGColor "TransitionDuration" $TOC_Style_TransitionDuration "ZIndex" $TOC_Style_ZIndex "Padding" (dict "Y" $TOC_Style_Padding_Y "X" $TOC_Style_Padding_X) "TitleLineHeight" $TOC_Style_TitleLineHeight "Width" $TOC_Style_Width "Border" (dict "Width" $TOC_Style_Border_Width "Color" $TOC_Style_Border_Color) "Backdrop" (dict "ZIndex" $TOC_Style_Backdrop_ZIndex "BGColor" $TOC_Style_Backdrop_BGColor "Opacity" $TOC_Style_Backdrop_Opacity))) -}}
+
+{{- .Scratch.Set "plugin-toc.Parameters" $Parameters -}}

@@ -1,0 +1,66 @@
+# Minimum word count for a post page to trigger TOC creation.
+#
+MinWordCount = 400
+
+# Parameters for controlling the generated css and js files
+#
+[Build]
+
+# Whether to provide subresource integrity by generating a 
+# base64-encoded cryptographic hash and attaching a .Data.Integrity
+# property containing an integrity string, which is made up of the
+# name of the hash function, one hyphen and the base64-encoded hash sum.
+#
+Fingerprint = true
+
+# Output style for /assets/sass/toc.scss. 
+# Valid options are nested, expanded, compact and compressed
+#
+SassOutput = 'compact'
+
+# Whether to minify the Javascript file generated from
+# /assets/js/toc.js
+#
+MinifyScript = false
+
+[TOC]
+
+# Selector used to identify the HTML element whose child headings shall
+# be eligible for inclusion in the table of contents.
+#
+SourceSandbox = '#post-body'
+
+# Selector for identifying the HTML element into which the container
+# shall be prepended.
+#
+ContainerParent = 'main'
+
+# The text displayed within the TOC header.
+#
+TitleText = 'Table of Contents'
+
+# Selector for identifying the HTML element into which the toggle
+# button shall be prepended.
+#
+ToggleParent = 'main'
+
+# The text displayed by the toggle button.
+#
+ToggleText = 'Table of Contents'
+
+[TOC.Style]
+
+Indent = '2em'
+Color = 'null'
+BGColor = 'white'
+TransitionDuration = '.3s'
+ZIndex = 1045
+Padding.Y = '1rem'
+Padding.X = '1rem'
+TitleLineHeight = 1.5
+Width = '400px'
+Border.Width = '1px'
+Border.Color = 'rgba(black, .2)'
+Backdrop.ZIndex = 1040
+Backdrop.BGColor = 'black'
+Backdrop.Opacity = 0.5

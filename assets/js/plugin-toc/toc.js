@@ -1,30 +1,30 @@
-/*
-
-*/
 // Parameters
-const TOC_SOURCE_SANDBOX = '#post-body';
-const TOC_TITLE_TEXT = 'Table of Contents';
-const TOC_CONTAINER_PARENT_SEL = 'main';
-const TOC_TOGGLE_PARENT_SEL = 'main';
-const TOC_TOGGLE_TEXT = 'Table of Contents';
+{{ with .Scratch.Get "plugin-toc.Parameters" -}}
+const TOC_SOURCE_SANDBOX = '{{ .TOC.SourceSandbox }}';
+const TOC_TITLE_TEXT = '{{ .TOC.TitleText }}';
+const TOC_CONTAINER_PARENT_SEL = '{{ .TOC.ContainerParent }}';
+const TOC_TOGGLE_PARENT_SEL = '{{ .TOC.ToggleParent }}';
+const TOC_TOGGLE_TEXT = '{{ .TOC.ToggleText }}';
+{{- end }}
 const HEADING_SEL = [2,3,4,5,6]
                       .map(i => `${TOC_SOURCE_SANDBOX} h${i}[id]`)
                       .join(',');
                       
-                      
+{{ with site.Data.plugin_toc.specifiers -}}
 // HTML element IDs
-const TOC_BACKDROP_ID = 'toc-backdrop';
-const TOC_CONTAINER_ID = 'toc-container';
-const TOC_HEADER_ID = 'toc-header';
-const TOC_TITLE_ID = 'toc-title';
-const TOC_CLOSE_BUTTON_ID = 'toc-close-button';
-const TOC_BODY_ID = 'toc-body';
-const TOC_LEVEL_CLASS_PREFIX = 'toc-level-';
-const TOC_TOGGLE_ID = 'toc-toggle';
+const TOC_BACKDROP_ID = '{{ .BackdropID }}';
+const TOC_CONTAINER_ID = '{{ .ContainerID }}';
+const TOC_HEADER_ID = '{{ .HeaderID }}';
+const TOC_TITLE_ID = '{{ .TitleID }}';
+const TOC_CLOSE_BUTTON_ID = '{{ .CloseButtonID }}';
+const TOC_BODY_ID = '{{ .BodyID }}';
+const TOC_TOGGLE_ID = '{{ .ToggleID }}';
 
 // HTML Class Names
-const FADE_CLASS_NAME = 'fade';
-const SHOW_CLASS_NAME = 'show';
+const TOC_LEVEL_CLASS_PREFIX = '{{ .LevelClassNamePrefix }}';
+const FADE_CLASS_NAME = '{{ .FadeClassName }}';
+const SHOW_CLASS_NAME = '{{ .ShowClassName }}';
+{{- end }}
 
 // Property symbols
 const TOC_BACKDROP_ELEMENT = Symbol(TOC_BACKDROP_ID);
@@ -262,4 +262,4 @@ function hideTOC() {
   // Update the property storing the state.
   document[TOC_VISIBLE] = false;
   
-  }
+}
