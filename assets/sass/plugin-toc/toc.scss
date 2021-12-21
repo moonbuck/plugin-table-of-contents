@@ -1,4 +1,4 @@
-@import "vendor/rfs"
+@import "vendor/rfs";
 
 ///Specifiers used to select the HTML elements.
 {{ with site.Data.plugin_toc.specifiers }}
