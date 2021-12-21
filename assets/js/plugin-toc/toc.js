@@ -5,6 +5,7 @@ const TOC_TITLE_TEXT = '{{ .TOC.TitleText }}';
 const TOC_CONTAINER_PARENT_SEL = '{{ .TOC.ContainerParent }}';
 const TOC_TOGGLE_PARENT_SEL = '{{ .TOC.ToggleParent }}';
 const TOC_TOGGLE_TEXT = '{{ .TOC.ToggleText }}';
+const TOC_WIDTH = '{{ .TOC.Style.Width }}';
 {{- end }}
 const HEADING_SEL = [2,3,4,5,6]
                       .map(i => `${TOC_SOURCE_SANDBOX} h${i}[id]`)
@@ -30,8 +31,7 @@ const SHOW_CLASS_NAME = '{{ .ShowClassName }}';
 const TOC_BACKDROP_ELEMENT = Symbol(TOC_BACKDROP_ID);
 const TOC_CONTAINER_ELEMENT = Symbol(TOC_CONTAINER_ID);
 const TOC_VISIBLE = Symbol();
-const SWIPE_GESTURE = Symbol();
-const DRAG_GESTURE = Symbol();
+const GESTURE = Symbol();
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -39,28 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
   insertTOCToggle(document.querySelector(TOC_TOGGLE_PARENT_SEL));
   
   window.onhashchange = () => hideTOC();
+      
+  console.log(screen.width, 'screen width');
   
-  const action = direction => {
-    console.log(`Swipe or drag detected: ${direction}`);
-    if (!document[TOC_VISIBLE] && direction === 'inLeft') {
-      showTOC();
-    } else if (document[TOC_VISIBLE] && direction === 'inRight') {
-      hideTOC();
-    }
-  }
-  
-  const edges = new Set([LEFT_EDGE]);
-  
-  if ( ('ontouchstart' in window)
-    || (navigator.maxTouchPoints > 0)
-    || (navigator.msMaxTouchPoints > 0)) 
+  if ('ontouchstart' in window) 
   {
-    document.body[SWIPE_GESTURE] = new SwipeGesture(document.body, action, edges);
-    document.body[DRAG_GESTURE] = new DragGesture(document.body, action, edges);
-  }
-  
-  else {
-    document.body[DRAG_GESTURE] = new DragGesture(document.body, action, edges);
+    document.body[GESTURE] = 
+        new SwipeGesture(document.body, showTOC, [LEFT_EDGE]);
   }
   
 });
@@ -114,53 +99,13 @@ function insertTOC(parent) {
   // Create the table of contents title.
   let title = document.createElement('H2');
   title.id = TOC_TITLE_ID;
-  title.innerHTML = TOC_TITLE_TEXT;
+  title.innerHTML = `<nobr>${TOC_TITLE_TEXT}</nobr>`;
   
   // Append the title to the header and the header to the container.
   header.append(title);
   
-  let button = document.createElement('BUTTON');
-  button.id = TOC_CLOSE_BUTTON_ID;
-  button.type = 'button';
-  button.onclick = () => hideTOC();
   
-  let svg = document.createElement('SVG');
-  svg.innerHTML = `\
-    <svg aria-hidden='true' 
-         focusable='false' 
-         data-prefix='fad' 
-         data-icon='window-close' 
-         class='svg-inline--fa fa-window-close fa-w-16' 
-         role='img' 
-         xmlns='http://www.w3.org/2000/svg' 
-         viewBox='0 0 512 512'>
-      <g class='fa-group'>
-        <path class='fa-secondary' 
-              fill='currentColor' 
-              d='M464 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 \
-              48h416a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48zm-83.6 \
-              290.5a12.31 12.31 0 0 1 0 17.4l-40.5 40.5a12.31 12.31 \
-              0 0 1-17.4 0L256 313.3l-66.5 67.1a12.31 12.31 0 0 \
-              1-17.4 0l-40.5-40.5a12.31 12.31 0 0 1 \
-              0-17.4l67.1-66.5-67.1-66.5a12.31 12.31 0 0 1 \
-              0-17.4l40.5-40.5a12.31 12.31 0 0 1 17.4 0l66.5 67.1 \
-              66.5-67.1a12.31 12.31 0 0 1 17.4 0l40.5 40.5a12.31 \
-              12.31 0 0 1 0 17.4L313.3 256z' opacity='0.4'>
-        </path>
-        <path class='fa-primary' 
-              fill='currentColor' 
-              d='M380.4 322.5a12.31 12.31 0 0 1 0 17.4l-40.5 \
-              40.5a12.31 12.31 0 0 1-17.4 0L256 313.3l-66.5 \
-              67.1a12.31 12.31 0 0 1-17.4 0l-40.5-40.5a12.31 \
-              12.31 0 0 1 0-17.4l67.1-66.5-67.1-66.5a12.31 12.31 \
-              0 0 1 0-17.4l40.5-40.5a12.31 12.31 0 0 1 17.4 0l66.5 \
-              67.1 66.5-67.1a12.31 12.31 0 0 1 17.4 0l40.5 \
-              40.5a12.31 12.31 0 0 1 0 17.4L313.3 256z'>
-        </path>
-      </g>
-    </svg>`
-  button.append(svg);
-  header.append(button);
+  header.append(createCloseButton());
   
   container.append(header);
   
@@ -206,6 +151,56 @@ function insertTOC(parent) {
   // Initialize the property storing the state.
   document[TOC_VISIBLE] = false;
   
+  function createCloseButton() {
+    let button = document.createElement('BUTTON');
+    button.id = TOC_CLOSE_BUTTON_ID;
+    button.type = 'button';
+    button.onclick = () => hideTOC();
+    
+    let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('aria-hidden', true);
+    svg.setAttribute('focusable', false);
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('viewBox', '0 0 512 512');
+    
+    let g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    svg.append(g);
+    
+    let secondaryPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    secondaryPath.className = 'secondary';
+    secondaryPath.setAttribute('fill', 'currentColor');
+    secondaryPath.setAttribute('opacity', 0.4);
+    secondaryPath.setAttribute('d', '\
+M464 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 \
+48h416a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48zm-83.6 \
+290.5a12.31 12.31 0 0 1 0 17.4l-40.5 40.5a12.31 12.31 \
+0 0 1-17.4 0L256 313.3l-66.5 67.1a12.31 12.31 0 0 \
+1-17.4 0l-40.5-40.5a12.31 12.31 0 0 1 \
+0-17.4l67.1-66.5-67.1-66.5a12.31 12.31 0 0 1 \
+0-17.4l40.5-40.5a12.31 12.31 0 0 1 17.4 0l66.5 67.1 \
+66.5-67.1a12.31 12.31 0 0 1 17.4 0l40.5 40.5a12.31 \
+12.31 0 0 1 0 17.4L313.3 256z');
+
+    g.append(secondaryPath);
+    
+    let primaryPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    primaryPath.className = 'primary';
+    primaryPath.setAttribute('fill', 'currentColor');
+    primaryPath.setAttribute('d', '\
+M380.4 322.5a12.31 12.31 0 0 1 0 17.4l-40.5 \
+40.5a12.31 12.31 0 0 1-17.4 0L256 313.3l-66.5 \
+67.1a12.31 12.31 0 0 1-17.4 0l-40.5-40.5a12.31 \
+12.31 0 0 1 0-17.4l67.1-66.5-67.1-66.5a12.31 12.31 \
+0 0 1 0-17.4l40.5-40.5a12.31 12.31 0 0 1 17.4 0l66.5 \
+67.1 66.5-67.1a12.31 12.31 0 0 1 17.4 0l40.5 \
+40.5a12.31 12.31 0 0 1 0 17.4L313.3 256z');
+
+    g.append(primaryPath);
+    button.append(svg);
+
+    return button;
+  }
+  
 }
 
 /*
@@ -215,25 +210,25 @@ function insertTOC(parent) {
 function insertTOCToggle(parent) {
   
   // Create the button.
-  let button = document.createElement('BUTTON');
+  let toggle = document.createElement('BUTTON');
   
   // Set the ID.
-  button.id = TOC_TOGGLE_ID;
+  toggle.id = TOC_TOGGLE_ID;
   
   // Set the type.
-  button.type = 'button';
+  toggle.type = 'button';
   
   // Set the button's text.
-  button.innerHTML = TOC_TOGGLE_TEXT;
+  toggle.innerHTML = TOC_TOGGLE_TEXT;
   
   // Connect the button to the element it controls.
-  button.setAttribute('aria-controls', TOC_CONTAINER_ID);
+  toggle.setAttribute('aria-controls', TOC_CONTAINER_ID);
   
   // Configure the button action.
-  button.onclick = () => document[TOC_VISIBLE] ? hideTOC() : showTOC();
+  toggle.onclick = () => document[TOC_VISIBLE] ? hideTOC() : showTOC();
     
   // append the button.
-  parent.append(button);
+  parent.append(toggle);
   
 }
   
@@ -282,7 +277,7 @@ function hideTOC() {
   container.removeAttribute('aria-modal');
   container.removeAttribute('role');
   container.classList.remove(SHOW_CLASS_NAME);
-  container.style.visibility = 'hidden';
+  //container.style.visibility = 'hidden';
 
   // Update the property storing the state.
   document[TOC_VISIBLE] = false;
@@ -300,30 +295,19 @@ class Touch {
   
 }
 
-class Mouse {
-  
-  constructor() {    
-    this.isDown = false;
-    this.inLeft = false;
-    this.inRight = false;
-    this.timestamp = null;    
-  }
-  
-}
-
 class Threshold {
   
   constructor(width, ms) {    
     this.width = width;
-    this.start = 0.1 * width;
-    this.end = 0.13 * width;
+    this.start = 0.2 * width;
+    this.end = 0.3 * width;
     this.ms = ms;    
   }
   
   resize(width) {    
     this.width = width;
-    this.start = 0.1 * width;
-    this.end = 0.13 * width;    
+    this.start = 0.2 * width;
+    this.end = 0.3 * width;    
   }
   
 }
@@ -390,72 +374,6 @@ class SwipeGesture {
 
   }
   
-  get action() { return _action; }
-  
-  set action(action) {
-    this._action = typeof action === 'function' ? action : null;
-  }
-    
-}
-
-class DragGesture {
-  
-  constructor(element, action, edges = EDGES) {
-    
-    this.element = element;
-    this.action = action;
-    this.threshold = new Threshold(window.innerWidth, 500);
-    this.mouse = new Mouse();
-    this.edges = new Set([...edges].filter(edge => EDGES.has(edge)));
-    
-    document.addEventListener('resize', () => {      
-      this.threshold.resize(window.innerWidth)      
-    });
-    
-    element.addEventListener('mousedown', event => {
-      
-      let x = event.pageX;
-      this.mouse.isDown = true;
-      this.mouse.timestamp = performance.now();
-      
-      if (this.edges.has(LEFT_EDGE) && x < this.threshold.start) {
-        this.mouse.inLeft = true;
-      }
-      
-      else if (this.edges.has(RIGHT_EDGE) && x > this.threshold.width - this.threshold.start) {
-        this.mouse.inRight = true;
-      }
-      
-    });
-    
-    element.addEventListener('mousemove', event => {
-      
-      let x = event.pageX;
-      
-      if (this.mouse.inLeft && x > this.threshold.end) {
-        this.mouse.inLeft = false;
-        
-        if (performance.now() - this.mouse.timestamp < this.threshold.ms) {
-          this._action?.('inLeft');
-        }
-      } 
-      
-      else if (this.mouse.inRight && x < this.threshold.width - this.threshold.end) {
-        this.mouse.inRight = false;
-        
-        if (performance.now() - this.mouse.timestamp < this.threshold.ms) {
-          this._action?.('inRight');
-        }
-      }
-      
-    });
-
-    element.addEventListener('mouseup', event => {
-      this.mouse = new Mouse();
-    });
-
-  }
-
   get action() { return _action; }
   
   set action(action) {

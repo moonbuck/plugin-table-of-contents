@@ -15,6 +15,7 @@
   
   */ -}}
 {{- $MinWordCount := $Config.MinWordCount | default 400 -}}
+{{- $DebugPrint := $Config.DebugPrint | default false -}}
 {{- $Build_Fingerprint := $Config.Build.Fingerprint | default true -}}
 {{- $Build_SassOutput := $Config.Build.SassOutput | default "compact" -}}
 {{- $Build_MinifyScript := $Config.Build.MinifyScript | default false -}}
@@ -24,21 +25,31 @@
 {{- $TOC_ToggleParent := $Config.TOC.ToggleParent | default "main" -}}
 {{- $TOC_ToggleText := $Config.TOC.ToggleText | default "Table of Contents" -}}
 
-{{- $TOC_Style_Indent := $Config.TOC.Style.Indent | default "2em" -}}
 {{- $TOC_Style_Color := $Config.TOC.Style.Color | default "null" -}}
 {{- $TOC_Style_BGColor := $Config.TOC.Style.BGColor | default "white" -}}
 {{- $TOC_Style_TransitionDuration := $Config.TOC.Style.TransitionDuration | default ".3s" -}}
 {{- $TOC_Style_ZIndex := $Config.TOC.Style.ZIndex | default 1045 -}}
 {{- $TOC_Style_Padding_Y := $Config.TOC.Style.Padding.Y | default "1rem" -}}
 {{- $TOC_Style_Padding_X := $Config.TOC.Style.Padding.X | default "1rem" -}}
-{{- $TOC_Style_TitleLineHeight := $Config.TOC.Style.TitleLineHeight | default 1.5 -}}
-{{- $TOC_Style_Width := $Config.TOC.Style.Width | default "400px" -}}
 {{- $TOC_Style_Border_Width := $Config.TOC.Style.Border.Width | default "1px" -}}
 {{- $TOC_Style_Border_Color := $Config.TOC.Style.Border.Color | default "rgba(black, .2)" -}}
+{{- $TOC_Style_Header_BGColor := $Config.TOC.Style.Header.BGColor | default "null" -}}
+{{- $TOC_Style_Title_LineHeight := $Config.TOC.Style.Title.LineHeight | default 1.5 -}}
+{{- $TOC_Style_Title_Color := $Config.TOC.Style.Title.Color | default "null" -}}
+{{- $TOC_Style_Title_Font_Size := $Config.TOC.Style.Title.Font.Size | default "null" -}}
+{{- $TOC_Style_Title_Font_Family := $Config.TOC.Style.Title.Font.Family | default "null" -}}
+{{- $TOC_Style_Title_Font_Weight := $Config.TOC.Style.Title.Font.Weight | default "null" -}}
+{{- $TOC_Style_Link_LineHeight := $Config.TOC.Style.Link.LineHeight | default 1.5 -}}
+{{- $TOC_Style_Link_Color := $Config.TOC.Style.Link.Color | default "null" -}}
+{{- $TOC_Style_Link_Indent := $Config.TOC.Style.Link.Indent | default "2em" -}}
+{{- $TOC_Style_Link_Font_Size := $Config.TOC.Style.Link.Font.Size | default "null" -}}
+{{- $TOC_Style_Link_Font_Family := $Config.TOC.Style.Link.Font.Family | default "null" -}}
+{{- $TOC_Style_Link_Font_Weight := $Config.TOC.Style.Link.Font.Weight | default "null" -}}
+{{- $TOC_Style_Width := $Config.TOC.Style.Width | default 400 -}}
 {{- $TOC_Style_Backdrop_ZIndex := $Config.TOC.Style.Backdrop.ZIndex | default 1040 -}}
 {{- $TOC_Style_Backdrop_BGColor := $Config.TOC.Style.Backdrop.BGColor | default "black" -}}
 {{- $TOC_Style_Backdrop_Opacity := $Config.TOC.Style.Backdrop.Opacity | default 0.5 -}}
 
-{{- $Parameters := dict "MinWordCount" $MinWordCount "Build" (dict "Fingerprint" $Build_Fingerprint "SassOutput" $Build_SassOutput "MinifyScript" $Build_MinifyScript) "TOC" (dict "SourceSandbox" $TOC_SourceSandbox "ContainerParent" $TOC_ContainerParent "TitleText" $TOC_TitleText "ToggleParent" $TOC_ToggleParent "ToggleText" $TOC_ToggleText "Style" (dict "Indent" $TOC_Style_Indent "Color" $TOC_Style_Color "BGColor" $TOC_Style_BGColor "TransitionDuration" $TOC_Style_TransitionDuration "ZIndex" $TOC_Style_ZIndex "Padding" (dict "Y" $TOC_Style_Padding_Y "X" $TOC_Style_Padding_X) "TitleLineHeight" $TOC_Style_TitleLineHeight "Width" $TOC_Style_Width "Border" (dict "Width" $TOC_Style_Border_Width "Color" $TOC_Style_Border_Color) "Backdrop" (dict "ZIndex" $TOC_Style_Backdrop_ZIndex "BGColor" $TOC_Style_Backdrop_BGColor "Opacity" $TOC_Style_Backdrop_Opacity))) -}}
+{{- $Parameters := dict "MinWordCount" $MinWordCount "DebugPrint" $DebugPrint "Build" (dict "Fingerprint" $Build_Fingerprint "SassOutput" $Build_SassOutput "MinifyScript" $Build_MinifyScript) "TOC" (dict "SourceSandbox" $TOC_SourceSandbox "ContainerParent" $TOC_ContainerParent "TitleText" $TOC_TitleText "ToggleParent" $TOC_ToggleParent "ToggleText" $TOC_ToggleText "Style" (dict "Color" $TOC_Style_Color "BGColor" $TOC_Style_BGColor "TransitionDuration" $TOC_Style_TransitionDuration "ZIndex" $TOC_Style_ZIndex "Padding" (dict "Y" $TOC_Style_Padding_Y "X" $TOC_Style_Padding_X) "Header" (dict "BGColor" $TOC_Style_Header_BGColor) "Title" (dict "LineHeight" $TOC_Style_Title_LineHeight "Color" $TOC_Style_Title_Color "Font" (dict "Size" $TOC_Style_Title_Font_Size "Family" $TOC_Style_Title_Font_Family "Weight" $TOC_Style_Title_Font_Weight)) "Link" (dict "LineHeight" $TOC_Style_Link_LineHeight "Color" $TOC_Style_Link_Color "Indent" $TOC_Style_Link_Indent "Font" (dict "Size" $TOC_Style_Link_Font_Size "Family" $TOC_Style_Link_Font_Family "Weight" $TOC_Style_Link_Font_Weight)) "Width" $TOC_Style_Width "Border" (dict "Width" $TOC_Style_Border_Width "Color" $TOC_Style_Border_Color) "Backdrop" (dict "ZIndex" $TOC_Style_Backdrop_ZIndex "BGColor" $TOC_Style_Backdrop_BGColor "Opacity" $TOC_Style_Backdrop_Opacity))) -}}
 
 {{- .Scratch.Set "plugin-toc.Parameters" $Parameters -}}

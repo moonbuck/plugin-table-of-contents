@@ -2,6 +2,10 @@
 #
 MinWordCount = 400
 
+# Whether to print HTML comments for debugging purposes.
+#
+DebugPrint = false
+
 # Parameters for controlling the generated css and js files
 #
 [Build]
@@ -23,6 +27,8 @@ SassOutput = 'compact'
 #
 MinifyScript = false
 
+# Parameters controlling the generation of the table of contents.
+#
 [TOC]
 
 # Selector used to identify the HTML element whose child headings shall
@@ -33,7 +39,7 @@ SourceSandbox = '#post-body'
 # Selector for identifying the HTML element into which the container
 # shall be prepended.
 #
-ContainerParent = 'main'
+ContainerParent = 'article#post'
 
 # The text displayed within the TOC header.
 #
@@ -46,30 +52,150 @@ ToggleParent = '#toc-toggle'
 
 # The text displayed by the toggle button.
 #
-ToggleText = 'Table of Contents'
+ToggleText = 'TOC'
 
+# Parameters controlling the way the TOC is styled.
+#
 [TOC.Style]
 
-Indent = '2em'
+# The font color to apply. A value of 'null' prevents the generation of 
+# a CSS style rule.
+#
 Color = 'null'
-BGColor = 'white'
-TransitionDuration = '.3s'
-ZIndex = 1045
-TitleLineHeight = 1.5
-Width = '400px'
 
+# The background color.
+#
+BGColor = 'white'
+
+# The duration for the triggered transition.
+#
+TransitionDuration = '.3s'
+
+# Z-axis index. 
+# The default value is lifted from Bootstrap's Offcanvas setting.
+#
+ZIndex = 1045
+
+# The width of the table of contents in pixels.
+#
+Width = 400
+
+# TOC padding parameters.
+#
 [TOC.Style.Padding]
 
+# Vertical padding.
+#
 Y = '1rem'
+
+# Horizontal padding.
+#
 X = '1rem'
 
+# TOC border parameters.
+#
 [TOC.Style.Border]
 
+# The width of the border.
+#
 Width = '1px'
+
+# The border color.
+#
 Color = 'rgba(black, .2)'
 
+# TOC header parameters
+#
+[TOC.Style.Header]
+
+# The background color for the header. A value of 'null' prevents 
+# the generation of a CSS style rule.
+#
+BGColor = 'null'
+
+# TOC Title style parameters.
+#
+[TOC.Style.Title]
+
+# The line height for the TOC's title.
+#
+LineHeight = 1.5
+
+# The font color to apply. A value of 'null' prevents the generation of 
+# a CSS style rule.
+#
+Color = 'null'
+
+# TOC Title font style parameters.
+#
+[TOC.Style.Title.Font]
+
+# The font size. A value of 'null' prevents the generation of 
+# a CSS style rule.
+#
+Size = 'null'
+
+# The font family. A value of 'null' prevents the generation of 
+# a CSS style rule.
+#
+Family = 'null'
+
+# The font weight. A value of 'null' prevents the generation of 
+# a CSS style rule.
+#
+Weight = 'null'
+
+# TOC section link style parameters
+#
+[TOC.Style.Link]
+
+# The line height for the TOC's links.
+#
+LineHeight = 1.1
+
+# The font color to apply. A value of 'null' prevents the generation of 
+# a CSS style rule.
+#
+Color = 'null'
+
+# Subsection indentation. This is cumulative in that level 1
+# links are not indented, level 2 links are indented by this value, 
+# level 3 links are indented by twice this value, etc.
+#
+Indent = '2em'
+
+# TOC link font style parameters.
+#
+[TOC.Style.Link.Font]
+
+# The font size. A value of 'null' prevents the generation of 
+# a CSS style rule.
+#
+Size = 'null'
+
+# The font family. A value of 'null' prevents the generation of 
+# a CSS style rule.
+#
+Family = 'null'
+
+# The font weight. A value of 'null' prevents the generation of 
+# a CSS style rule.
+#
+Weight = 'null'
+
+# TOC Backdrop parameters.
+#
 [TOC.Style.Backdrop]
 
+# Z-axis index for the backdrop. 
+# The default value is lifted from Bootstrap's Offcanvas setting.
+#
 ZIndex = 1040
+
+# The backdrop's background color.
+#
 BGColor = 'black'
+
+# The backdrop's opacity.
+#
 Opacity = 0.5

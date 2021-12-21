@@ -1,3 +1,6 @@
+@import "vendor/rfs"
+
+///Specifiers used to select the HTML elements.
 {{ with site.Data.plugin_toc.specifiers }}
 $toc-backdrop-id: {{ .BackdropID }};
 $toc-container-id: {{ .ContainerID }};
@@ -11,21 +14,60 @@ $fade-class-name: {{ .FadeClassName }};
 $show-class-name: {{ .ShowClassName }};
 {{ end }}
 
+/// Style parameters
 {{ with (.Scratch.Get "plugin-toc.Parameters").TOC.Style }}
-$indent: {{ .Indent }};
+
 $toc-color: {{ .Color }};
 $toc-bg-color: {{ .BGColor }};
 $toc-transition-duration: {{ .TransitionDuration }};
-$zindex-toc-backdrop: {{ .Backdrop.ZIndex }};
-$zindex-toc: {{ .ZIndex }};
-$toc-backdrop-bg-color: {{ .Backdrop.BGColor }};
-$toc-backdrop-opacity: {{ .Backdrop.Opacity }};
-$toc-padding-y: {{ .Padding.Y }};
-$toc-padding-x: {{ .Padding.X }};
-$toc-title-line-height: {{ .TitleLineHeight }};
-$toc-width: {{ .Width }};
-$toc-border-width: {{ .Border.Width }};
-$toc-border-color: {{ .Border.Color }};
+$toc-zindex: {{ .ZIndex }};
+$toc-width: {{ .Width }}px;
+
+{{ with .Padding }}
+$toc-padding-y: {{ .Y }};
+$toc-padding-x: {{ .X }};
+{{ end }}
+
+{{ with .Border }}
+$toc-border-width: {{ .Width }};
+$toc-border-color: {{ .Color }};
+{{ end }}
+
+{{ with .Header }}
+$toc-header-bg-color: {{ .BGColor }};
+{{ end }}
+
+{{ with .Title }}
+$toc-title-line-height: {{ .LineHeight }};
+$toc-title-color: {{ .Color }};
+
+{{ with .Font }}
+$toc-title-font-size: {{ .Size }};
+$toc-title-font-family: {{ .Family }};
+$toc-title-font-weight: {{ .Weight }};
+{{ end }}
+
+{{ end }}
+
+{{ with .Link }}
+$toc-link-line-height: {{ .LineHeight }};
+$toc-link-color: {{ .Color }};
+$toc-link-indent: {{ .Indent }};
+
+{{ with .Font }}
+$toc-link-font-size: {{ .Size }};
+$toc-link-font-family: {{ .Family }};
+$toc-link-font-weight: {{ .Weight }};
+{{ end }}
+
+{{ end }}
+
+{{ with .Backdrop }}
+$toc-backdrop-zindex: {{ .ZIndex }};
+$toc-backdrop-bg-color: {{ .BGColor }};
+$toc-backdrop-opacity: {{ .Opacity }};
+{{ end }}
+
 {{ end }}
 
 ##{$toc-backdrop-id} {
@@ -36,14 +78,16 @@ $toc-border-color: {{ .Border.Color }};
   height: 100vh;
   background-color: $toc-backdrop-bg-color;
 
-  // Fade for backdrop
+  // Fade backdrop and lower to prevent click handling.
   &.#{$fade-class-name} { 
     opacity: 0; 
     z-index: -1;
   }
+  
+  // Show and raise to allow click handling.
   &.#{$show-class-name} { 
     opacity: $toc-backdrop-opacity; 
-    z-index: $zindex-toc-backdrop;
+    z-index: $toc-backdrop-zindex;
   }
 }
 
@@ -51,6 +95,11 @@ button##{$toc-toggle-id} {
   background: rgba(30,32,37,.5);
   color: white;
   border: none;
+  font-size: 0.85rem;
+  position: absolute;
+  padding: .125em .25em;
+  left: 0;
+  bottom: 1em;
 }
     
 ##{$toc-container-id} {
@@ -61,12 +110,11 @@ button##{$toc-toggle-id} {
   transform: translateX(-100%);
   position: fixed;
   bottom: 0;
-  z-index: $zindex-toc;
+  z-index: $toc-zindex;
   display: flex;
   flex-direction: column;
   max-width: 100%;
   color: $toc-color;
-  visibility: hidden;
   background-color: $toc-bg-color;
   background-clip: padding-box;
   outline: 0;
@@ -74,64 +122,76 @@ button##{$toc-toggle-id} {
   
   &.#{$show-class-name} { transform: none; }
   
-  ##{$toc-header-id} {
+  header##{$toc-header-id} {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: $toc-padding-y $toc-padding-x;
+    background: $toc-header-bg-color;
   
-    ##{$toc-title-id} {
+    h2##{$toc-title-id} {
       margin-bottom: 0;
       line-height: $toc-title-line-height;
+      color: $toc-title-color;
+      @include font-size($toc-title-font-size);
+      font-family: $toc-title-font-family;
+      font-weight: $toc-title-font-weight;
     }
     
-    ##{$toc-close-button-id} {
-      padding: ($toc-padding-y * .5) ($toc-padding-x * .5);
-      margin-top: $toc-padding-y * -.5;
-      margin-right: $toc-padding-x * -.5;
-      margin-bottom: $toc-padding-y * -.5;
+    button##{$toc-close-button-id} {
+      position: absolute;      
+      top: $toc-padding-y * .5;
+      right: $toc-padding-x * .5;
+      padding: 0;
+      margin: 0;
+      width: 1rem;
       background: transparent;
       border: none;
+      color: lightgray;
+      visibility: hidden;
       
-      /*!
-       * Font Awesome Pro 5.15.4 by @fontawesome - 
-       * https://fontawesome.com
-       * License - https://fontawesome.com/license (Commercial License)
-       */
-      .svg-inline--fa {
+      @media (max-width: $toc-width + 50) {
+        visibility: visible;
+      }
+      
+      svg {
         display: inline-block;
-        font-size: inherit;
-        height: 1em;
+        height: 1rem;
         overflow: visible;
-        align-self: baseline;
-        vertical-align: baseline;
+        align-self: center;
+        vertical-align: center;
         fill: lightgray;
-        
-        &.fa-secondary { opacity: 0.4; }
       }
     }
   }
 
-  ##{$toc-body-id} {
+  nav##{$toc-body-id} {
     flex-grow: 1;
     padding: $toc-padding-y $toc-padding-x;
     overflow-y: auto;
     display: flex;
-    flex-direction: column;    
+    flex-direction: column; 
+    gap: .5rem;   
     
     a {
+      line-height: $toc-link-line-height;
+      color: $toc-link-color;
+      @include font-size($toc-link-font-size);
+      font-family: $toc-link-font-family;
+      font-weight: $toc-link-font-weight;
       
       &.#{$toc-level-class-prefix}2 {
-        margin-left: $indent * 1;
+        margin-left: $toc-link-indent * 1;
       }
       &.#{$toc-level-class-prefix}3 {
-        margin-left: $indent * 2;
+        margin-left: $toc-link-indent * 2;
       }
       &.#{$toc-level-class-prefix}4 {
-        margin-left: $indent * 3;
+        margin-left: $toc-link-indent * 3;
       }
       &.#{$toc-level-class-prefix}5 {
-        margin-left: $indent * 4;
+        margin-left: $toc-link-indent * 4;
       }
     }
     
