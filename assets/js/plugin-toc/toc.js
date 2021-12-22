@@ -5,6 +5,8 @@ const TOC_TITLE_TEXT = '{{ .TOC.TitleText }}';
 const TOC_CONTAINER_PARENT_SEL = '{{ .TOC.ContainerParent }}';
 const TOC_TOGGLE_PARENT_SEL = '{{ .TOC.ToggleParent }}';
 const TOC_TOGGLE_TEXT = '{{ .TOC.ToggleText }}';
+const TOC_SECTION_NUMBERS = {{ .TOC.SectionNumbers }};
+const TOC_INJECT_SECTION_NUMBERS = {{ .TOC.InjectSectionNumbers }};
 const TOC_WIDTH = '{{ .TOC.Style.Width }}';
 {{- end }}
 const HEADING_SEL = [2,3,4,5,6]
@@ -174,14 +176,17 @@ function insertTOC(parent) {
     link.href = `#${heading.id}`;
     link.innerHTML = heading.innerHTML;
     
-    entry.append(number);
+    if (TOC_SECTION_NUMBERS) { entry.append(number); }
+    
     entry.append(link);
         
     // Append the anchor to the <nav> element.
     body.append(entry);
     
-    // Insert the section number into the heading.
-    heading.innerHTML = `<b><i>${sectionNumber}</i></b> ${heading.innerHTML}`;
+    if (TOC_INJECT_SECTION_NUMBERS) {
+      // Insert the section number into the heading.
+      heading.innerHTML = `<b><i>${sectionNumber}</i></b> ${heading.innerHTML}`;
+    }
     
   }
   
