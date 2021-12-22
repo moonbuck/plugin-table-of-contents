@@ -15,7 +15,7 @@
   Insert the plugin version and build time 
   */ -}}
 {{- $time := (time (sub now.Unix 28800)).Format "Jan 2 at 15:04" -}}
-{{ printf "\n<!-- Table of Contents v1.0.4 (built on %s) -->\n" $time | safeHTML }}
+{{ printf "\n<!-- Table of Contents v1.0.5 (built on %s) -->\n" $time | safeHTML }}
 
 {{- $source_dir := "js/plugin-toc/" -}}
 {{- $template_name := "toc.js" -}}

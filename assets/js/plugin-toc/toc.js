@@ -25,6 +25,9 @@ const TOC_TOGGLE_ID = '{{ .ToggleID }}';
 const TOC_LEVEL_CLASS_PREFIX = '{{ .LevelClassNamePrefix }}';
 const FADE_CLASS_NAME = '{{ .FadeClassName }}';
 const SHOW_CLASS_NAME = '{{ .ShowClassName }}';
+const OFFSCREEN_CLASS_NAME = '{{ .OffscreenClassName }}';
+const TOC_ENTRY_CLASS_NAME = '{{ .TOCEntryClassName }}';
+const SECTION_NUMBER_CLASS_NAME = '{{ .SectionNumberClassName }}';
 {{- end }}
 
 // Property symbols
@@ -33,21 +36,12 @@ const TOC_CONTAINER_ELEMENT = Symbol(TOC_CONTAINER_ID);
 const TOC_VISIBLE = Symbol();
 const GESTURE = Symbol();
 
+const ALWAYS_OFFSCREEN = true;
+
 document.addEventListener('DOMContentLoaded', () => {
 
   insertTOC(document.querySelector(TOC_CONTAINER_PARENT_SEL));
-  insertTOCToggle(document.querySelector(TOC_TOGGLE_PARENT_SEL));
-  
-  window.onhashchange = () => hideTOC();
-      
-  console.log(screen.width, 'screen width');
-  
-  if ('ontouchstart' in window) 
-  {
-    document.body[GESTURE] = 
-        new SwipeGesture(document.body, showTOC, [LEFT_EDGE]);
-  }
-  
+    
 });
 
 /*
@@ -58,24 +52,6 @@ function insertTOC(parent) {
   
   // Short circuit if parent is falsy.
   if (!parent) { return; }
-  
-  // Create the backdrop.
-  let backdrop = document.createElement('DIV');
-  
-  // Store the element for easy access.
-  document[TOC_BACKDROP_ELEMENT] = backdrop;
-  
-  // Set the ID.
-  backdrop.id = TOC_BACKDROP_ID;
-  
-  // Give it the fade class so it's initially hidden.
-  backdrop.className = FADE_CLASS_NAME;
-  
-  // Add a handler for touches/clicks.
-  backdrop.onclick = () => hideTOC();
-    
-  // Prepend the backdrop.
-  parent.prepend(backdrop);
   
   // Create the container for the table of contents.
   let container = document.createElement('DIV');
@@ -91,7 +67,46 @@ function insertTOC(parent) {
   
   // Specify its label.
   container.setAttribute('aria-labelledby', TOC_TITLE_ID);
+
+
+  let geometry = parent.getBoundingClientRect();
+    
+  // Check whether the TOC is wider than its parent.
+  if (geometry.width < TOC_WIDTH || ALWAYS_OFFSCREEN) {
+    
+    // Create and attach the backdrop.
+    let backdrop = createBackdrop();
+
+    // Prepend the backdrop.
+    parent.prepend(backdrop);
+    
+    // Add the offscreen class to the container.
+    container.className = OFFSCREEN_CLASS_NAME;
+    
+    // Initialize the property storing the state.
+    document[TOC_VISIBLE] = false;
+    
+    // Insert the button for toggling the TOC.
+    insertTOCToggle(document.querySelector(TOC_TOGGLE_PARENT_SEL));
+
+    // Hide the TOC on selection.
+    window.onhashchange = () => hideTOC();
+          
+    // Add the swipe gesture for touch screen devices.
+    if ('ontouchstart' in window) 
+    {
+      document.body[GESTURE] = 
+          new SwipeGesture(document.body, showTOC, [LEFT_EDGE]);
+    }
+  }
   
+  // Otherwise, configure for occupying the parent.
+  else {
+    
+    // Initialize the property storing the state.
+    document[TOC_VISIBLE] = true;
+  }
+    
   // Create the header element
   let header = document.createElement('HEADER');
   header.id = TOC_HEADER_ID;
@@ -122,34 +137,53 @@ function insertTOC(parent) {
   // Fetch eligible headings for link generation.
   let headings = document.querySelectorAll(HEADING_SEL);
     
+  // Create an array for section number tallying.
+  let sectionNumbers = [0,0,0,0,0];
+  
   // Iterate the headings, which should all have IDs courtesy of
   // the selector used to fetch them.
   for (let heading of headings) {
    
     // Parse the heading level, subtracting one as we 
     // never include <h1> headings.
-    let level = parseInt(heading.tagName.charAt(1)) - 1
+    let level = parseInt(heading.tagName.charAt(1)) - 1;
     
-    // Create the anchor element to be inserted into the 
-    // table of contents.
+    // Increment the number for this level.
+    sectionNumbers[level - 1]++;
+    
+    // Zero out lower section numbers.
+    for (let i = level; i < sectionNumbers.length; i++) { 
+      sectionNumbers[i] = 0; 
+    }
+    
+    // Generate the section number.
+    let sectionNumber = sectionNumbers.slice(0, level).join('.');
+    
+    // Create the entry.
+    let entry = document.createElement('DIV');
+    entry.classList.add(TOC_ENTRY_CLASS_NAME);
+    entry.classList.add(`${TOC_LEVEL_CLASS_PREFIX}${level}`);
+        
+    // Create the number element.
+    let number = document.createElement('SPAN');
+    number.innerHTML = sectionNumber;
+    number.className = SECTION_NUMBER_CLASS_NAME;
+    
+    // Create the anchor element.
     let link = document.createElement('A');
-    
-    // Assign a level-relevant class name for styling.
-    link.className = `${TOC_LEVEL_CLASS_PREFIX}${level}`;
-    
-    // Point the anchor at the heading.
     link.href = `#${heading.id}`;
-    
-    // Give the anchor the heading's content.
     link.innerHTML = heading.innerHTML;
     
+    entry.append(number);
+    entry.append(link);
+        
     // Append the anchor to the <nav> element.
-    body.append(link)
+    body.append(entry);
+    
+    // Insert the section number into the heading.
+    heading.innerHTML = `<b><i>${sectionNumber}</i></b> ${heading.innerHTML}`;
     
   }
-  
-  // Initialize the property storing the state.
-  document[TOC_VISIBLE] = false;
   
   function createCloseButton() {
     let button = document.createElement('BUTTON');
@@ -201,6 +235,25 @@ M380.4 322.5a12.31 12.31 0 0 1 0 17.4l-40.5 \
     return button;
   }
   
+  function createBackdrop() {
+    // Create the backdrop.
+    let backdrop = document.createElement('DIV');
+    
+    // Store the element for easy access.
+    document[TOC_BACKDROP_ELEMENT] = backdrop;
+    
+    // Set the ID.
+    backdrop.id = TOC_BACKDROP_ID;
+    
+    // Give it the fade class so it's initially hidden.
+    backdrop.className = FADE_CLASS_NAME;
+    
+    // Add a handler for touches/clicks.
+    backdrop.onclick = () => hideTOC();
+      
+    return backdrop;
+  }
+  
 }
 
 /*
@@ -247,7 +300,6 @@ function showTOC() {
   let container = document[TOC_CONTAINER_ELEMENT];
   
   // Configure the container for visibility.
-  container.style.visibility = 'visible';
   container.removeAttribute('aria-hidden');
   container.setAttribute('aria-modal', true);
   container.setAttribute('role', 'dialog');
@@ -277,8 +329,7 @@ function hideTOC() {
   container.removeAttribute('aria-modal');
   container.removeAttribute('role');
   container.classList.remove(SHOW_CLASS_NAME);
-  //container.style.visibility = 'hidden';
-
+  
   // Update the property storing the state.
   document[TOC_VISIBLE] = false;
   
