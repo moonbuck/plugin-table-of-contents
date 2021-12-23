@@ -1,7 +1,9 @@
 @import "vendor/rfs";
 
+{{ with .Scratch.Get "plugin-toc.Parameters" }}
+
 ///Specifiers used to select the HTML elements.
-{{ with site.Data.plugin_toc.specifiers }}
+{{ with .Specifiers }}
 $toc-backdrop-id: {{ .BackdropID }};
 $toc-container-id: {{ .ContainerID }};
 $toc-header-id: {{ .HeaderID }};
@@ -18,7 +20,7 @@ $section-number-class-name: {{ .SectionNumberClassName }};
 {{ end }}
 
 /// Style parameters
-{{ with (.Scratch.Get "plugin-toc.Parameters").TOC.Style }}
+{{ with .TOC.Style }}
 
 $toc-color: {{ .Color }};
 $toc-bg-color: {{ .BGColor }};
@@ -34,6 +36,18 @@ $toc-padding-x: {{ .X }};
 {{ with .Border }}
 $toc-border-width: {{ .Width }};
 $toc-border-color: {{ .Color }};
+{{ end }}
+
+{{ with .Toggle }}
+$toc-toggle-color: {{ .Color }};
+$toc-toggle-bg-color: {{ . BGColor }};
+
+{{ with .Font }}
+$toc-toggle-font-size: {{ .Size }};
+$toc-toggle-font-family: {{ .Family }};
+$toc-toggle-font-weight: {{ .Weight }};
+{{ end }}
+
 {{ end }}
 
 {{ with .Header }}
@@ -73,6 +87,8 @@ $toc-backdrop-opacity: {{ .Opacity }};
 
 {{ end }}
 
+{{ end }}
+
 ##{$toc-backdrop-id} {
   position: fixed;
   top: 0;
@@ -95,14 +111,14 @@ $toc-backdrop-opacity: {{ .Opacity }};
 }
 
 button##{$toc-toggle-id} {
-  background: rgba(30,32,37,.5);
-  color: white;
+  background: $toc-toggle-bg-color;
+  color: $toc-toggle-color;
   border: none;
-  font-size: 0.85rem;
-  position: absolute;
-  padding: .125em .25em;
-  left: 0;
-  bottom: 1em;
+  background-radius: 0;
+  white-space: nowrap;
+  font-size: $toc-toggle-font-size;
+  font-weight: $toc-toggle-font-weight;
+  font-family: $toc-toggle-font-family;
 }
     
 ##{$toc-container-id} {
@@ -181,11 +197,11 @@ button##{$toc-toggle-id} {
     overflow-y: auto;
     display: flex;
     flex-direction: column; 
-    gap: .5rem;   
+    gap: .5rem;
     
     .#{$toc-entry-class-name} {
         display: flex;
-        gap: 0.5em;
+        gap: 1.5em;
         align-items: baseline;
       
         &.#{$toc-level-class-prefix}2 {

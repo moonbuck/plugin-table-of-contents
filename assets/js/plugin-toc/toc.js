@@ -1,143 +1,281 @@
-// Parameters
 {{ with .Scratch.Get "plugin-toc.Parameters" -}}
-const TOC_SOURCE_SANDBOX = '{{ .TOC.SourceSandbox }}';
-const TOC_TITLE_TEXT = '{{ .TOC.TitleText }}';
-const TOC_CONTAINER_PARENT_SEL = '{{ .TOC.ContainerParent }}';
-const TOC_TOGGLE_PARENT_SEL = '{{ .TOC.ToggleParent }}';
-const TOC_TOGGLE_TEXT = '{{ .TOC.ToggleText }}';
-const TOC_SECTION_NUMBERS = {{ .TOC.SectionNumbers }};
-const TOC_INJECT_SECTION_NUMBERS = {{ .TOC.InjectSectionNumbers }};
-const TOC_WIDTH = '{{ .TOC.Style.Width }}';
-{{- end }}
-const HEADING_SEL = [2,3,4,5,6]
-                      .map(i => `${TOC_SOURCE_SANDBOX} h${i}[id]`)
-                      .join(',');
-                      
-{{ with site.Data.plugin_toc.specifiers -}}
-// HTML element IDs
-const TOC_BACKDROP_ID = '{{ .BackdropID }}';
-const TOC_CONTAINER_ID = '{{ .ContainerID }}';
-const TOC_HEADER_ID = '{{ .HeaderID }}';
-const TOC_TITLE_ID = '{{ .TitleID }}';
-const TOC_CLOSE_BUTTON_ID = '{{ .CloseButtonID }}';
-const TOC_BODY_ID = '{{ .BodyID }}';
-const TOC_TOGGLE_ID = '{{ .ToggleID }}';
-
-// HTML Class Names
-const TOC_LEVEL_CLASS_PREFIX = '{{ .LevelClassNamePrefix }}';
-const FADE_CLASS_NAME = '{{ .FadeClassName }}';
-const SHOW_CLASS_NAME = '{{ .ShowClassName }}';
-const OFFSCREEN_CLASS_NAME = '{{ .OffscreenClassName }}';
-const TOC_ENTRY_CLASS_NAME = '{{ .TOCEntryClassName }}';
-const SECTION_NUMBER_CLASS_NAME = '{{ .SectionNumberClassName }}';
-{{- end }}
-
-// Property symbols
-const TOC_BACKDROP_ELEMENT = Symbol(TOC_BACKDROP_ID);
-const TOC_CONTAINER_ELEMENT = Symbol(TOC_CONTAINER_ID);
-const TOC_VISIBLE = Symbol();
-const GESTURE = Symbol();
-
-const ALWAYS_OFFSCREEN = true;
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  insertTOC(document.querySelector(TOC_CONTAINER_PARENT_SEL));
-    
-});
 
 /*
-  Generate the elements composing table of contents and prepend
-  the container to the specified parent element.
+  Symbols used for property storage.
 */
-function insertTOC(parent) {
+
+// Symbol used to store the backrop element in the document object.
+const BACKDROP_ELEMENT = Symbol('{{ .Specifiers.BackdropID }}');
+
+// Symbol used to store the TOC container in the document object.
+const CONTAINER_ELEMENT = Symbol('{{ .Specifiers.ContainerID }}');
+
+// Symbol used to store TOC visibility state in the document object.
+const VISIBLE = Symbol();
+
+// Symobl used to store the swipe gesture in the document body.
+const GESTURE = Symbol();
+
+// Whether to disallow static insertion.
+const ALWAYS_OFFSCREEN = true;
+
+/*
+  Use the DOMContentLoaded event as the hook for inserting the TOC.
+*/
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Establish a parent for the TOC container.
+  let parent = document.querySelector('{{ .TOC.ContainerParent }}') ?? document.body;
+
+  // Create the container.
+  let container = createTOCContainer();
   
-  // Short circuit if parent is falsy.
-  if (!parent) { return; }
+  // Configure components.
+  configureComponents(parent, container);
   
-  // Create the container for the table of contents.
+  // Insert the container.
+  parent.prepend(container);
+  
+});
+
+/* 
+  Configure components for an offscreen or static TOC.
+*/
+function configureComponents(parent, toc) {
+  
+  // Get the parent's geometry to assess available space.
+  let geometry = parent.getBoundingClientRect();
+    
+  // Check whether the TOC fits inside its container
+  // and we're flagged to allow for static insertion.
+  // If so, just return.
+  if (   geometry.width >= {{ .TOC.Style.Width }} 
+      && !ALWAYS_OFFSCREEN) 
+  { 
+    return; 
+  }
+  
+  // Prepend the backdrop.
+  parent.prepend(createBackdrop());
+  
+  // Add the offscreen class to the container for CSS transforms.
+  toc.className = '{{ .Specifiers.OffscreenClassName }}';
+  
+  // Initialize the property storing visibility state.
+  document[VISIBLE] = false;
+  
+  // Insert the button for toggling the TOC.
+  let toggleParent = document.querySelector('{{ .TOC.ToggleParent }}');
+  toggleParent?.append(createTOCToggle());
+  
+  // Hide the TOC on selection.
+  window.onhashchange = () => hideTOC();
+        
+  // Only add the swipe gesture for touch screen devices.
+  if ('ontouchstart' in window) 
+  {
+    document.body[GESTURE] = 
+        new SwipeGesture(document.body, showTOC, [LEFT_EDGE]);
+  }
+  
+}
+
+
+function showTOC() {
+  
+  // Ensure the table of contents is not already visible.
+  if (document[VISIBLE]) { return; }
+  
+  // Retrieve the backdrop.
+  let backdrop = document[BACKDROP_ELEMENT];
+    
+  // Configure the backdrop for visibility.
+  backdrop.classList.add('{{ .Specifiers.ShowClassName }}');
+  
+  // Retrieve the container.
+  let container = document[CONTAINER_ELEMENT];
+  
+  // Configure the container for visibility.
+  container.removeAttribute('aria-hidden');
+  container.setAttribute('aria-modal', true);
+  container.setAttribute('role', 'dialog');
+  container.classList.add('{{ .Specifiers.ShowClassName }}');
+  
+  // Update the property storing the state.
+  document[VISIBLE] = true;
+  
+}
+
+function hideTOC() {
+  
+  // Ensure the table of contents is actually visible.
+  if (!document[VISIBLE]) { return; }
+  
+  // Retrieve the backdrop.
+  let backdrop = document[BACKDROP_ELEMENT];
+    
+  // Configure the backdrop for invisibility.
+  backdrop.classList.remove('{{ .Specifiers.ShowClassName }}');
+  
+  // Retrieve the container.
+  let container = document[CONTAINER_ELEMENT];
+  
+  // Configure the container for invisibility.
+  container.setAttribute('aria-hidden', true);
+  container.removeAttribute('aria-modal');
+  container.removeAttribute('role');
+  container.classList.remove('{{ .Specifiers.ShowClassName }}');
+  
+  // Update the property storing the state.
+  document[VISIBLE] = false;
+  
+}
+
+/* 
+  Create the HTML element that will serve as the TOC container.
+*/
+function createTOCContainer() {
   let container = document.createElement('DIV');
   
   // Store the element for easy access.
-  document[TOC_CONTAINER_ELEMENT] = container;
+  document[CONTAINER_ELEMENT] = container;
   
   // Set the ID.
-  container.id = TOC_CONTAINER_ID;
+  container.id = '{{ .Specifiers.ContainerID }}';
   
   // Remove the container from tab navigation.
   container.tabIndex = '-1';
   
   // Specify its label.
-  container.setAttribute('aria-labelledby', TOC_TITLE_ID);
-
-
-  let geometry = parent.getBoundingClientRect();
-    
-  // Check whether the TOC is wider than its parent.
-  if (geometry.width < TOC_WIDTH || ALWAYS_OFFSCREEN) {
-    
-    // Create and attach the backdrop.
-    let backdrop = createBackdrop();
-
-    // Prepend the backdrop.
-    parent.prepend(backdrop);
-    
-    // Add the offscreen class to the container.
-    container.className = OFFSCREEN_CLASS_NAME;
-    
-    // Initialize the property storing the state.
-    document[TOC_VISIBLE] = false;
-    
-    // Insert the button for toggling the TOC.
-    insertTOCToggle(document.querySelector(TOC_TOGGLE_PARENT_SEL));
-
-    // Hide the TOC on selection.
-    window.onhashchange = () => hideTOC();
-          
-    // Add the swipe gesture for touch screen devices.
-    if ('ontouchstart' in window) 
-    {
-      document.body[GESTURE] = 
-          new SwipeGesture(document.body, showTOC, [LEFT_EDGE]);
-    }
-  }
+  container.setAttribute('aria-labelledby', '{{ .Specifiers.TitleID }}');
   
-  // Otherwise, configure for occupying the parent.
-  else {
+  // Append the header.
+  container.append(createHeader());
+  
+  // Append the entries.
+  container.append(createTOCBody());
+  
+  return container;
+}
+
+/*
+  Create the backdrop used when configured for an
+  offscreen TOC.
+*/
+function createBackdrop() {
+  // Create the backdrop.
+  let backdrop = document.createElement('DIV');
+  
+  // Store the element for easy access.
+  document[BACKDROP_ELEMENT] = backdrop;
+  
+  // Set the ID.
+  backdrop.id = '{{ .Specifiers.BackdropID }}';
+  
+  // Give it the fade class so it's initially hidden.
+  backdrop.className = '{{ .Specifiers.FadeClassName }}';
+  
+  // Add a handler for touches/clicks.
+  backdrop.onclick = () => hideTOC();
     
-    // Initialize the property storing the state.
-    document[TOC_VISIBLE] = true;
-  }
-    
+  return backdrop;
+}
+
+/*
+  Create TOC header element.
+*/
+function createHeader() {
   // Create the header element
   let header = document.createElement('HEADER');
-  header.id = TOC_HEADER_ID;
-  
-  // Create the table of contents title.
-  let title = document.createElement('H2');
-  title.id = TOC_TITLE_ID;
-  title.innerHTML = `<nobr>${TOC_TITLE_TEXT}</nobr>`;
+  header.id = '{{ .Specifiers.HeaderID }}';
   
   // Append the title to the header and the header to the container.
-  header.append(title);
-  
+  header.append(createTitle());
   
   header.append(createCloseButton());
   
-  container.append(header);
+  return header;
+}
+
+/* 
+  Create the TOC heading.
+*/
+function createTitle() {
+  // Create the table of contents title.
+  let title = document.createElement('H2');
+  title.id = '{{ .Specifiers.TitleID }}';
+  title.innerHTML = `<nobr>{{ .TOC.TitleText }}</nobr>`;
+  return title;
+}
+
+/*
+  Create the close button used to hide the TOC on small screens.
+*/
+function createCloseButton() {
+  // Create the button.
+  let button = document.createElement('BUTTON');
+  button.id = '{{ .Specifiers.CloseButtonID }}';
+  button.type = 'button';
+  button.onclick = () => hideTOC();
   
+  // Create the SVG icon.
+  let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('aria-hidden', true);
+  svg.setAttribute('focusable', false);
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('viewBox', '0 0 512 512');
+  
+  let g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  svg.append(g);
+  
+  let secondaryPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  secondaryPath.className = 'secondary';
+  secondaryPath.setAttribute('fill', 'currentColor');
+  secondaryPath.setAttribute('opacity', 0.4);
+  secondaryPath.setAttribute('d', '\
+M464 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 \
+48h416a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48zm-83.6 \
+290.5a12.31 12.31 0 0 1 0 17.4l-40.5 40.5a12.31 12.31 \
+0 0 1-17.4 0L256 313.3l-66.5 67.1a12.31 12.31 0 0 \
+1-17.4 0l-40.5-40.5a12.31 12.31 0 0 1 \
+0-17.4l67.1-66.5-67.1-66.5a12.31 12.31 0 0 1 \
+0-17.4l40.5-40.5a12.31 12.31 0 0 1 17.4 0l66.5 67.1 \
+66.5-67.1a12.31 12.31 0 0 1 17.4 0l40.5 40.5a12.31 \
+12.31 0 0 1 0 17.4L313.3 256z');
+
+  g.append(secondaryPath);
+  
+  let primaryPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  primaryPath.className = 'primary';
+  primaryPath.setAttribute('fill', 'currentColor');
+  primaryPath.setAttribute('d', '\
+M380.4 322.5a12.31 12.31 0 0 1 0 17.4l-40.5 \
+40.5a12.31 12.31 0 0 1-17.4 0L256 313.3l-66.5 \
+67.1a12.31 12.31 0 0 1-17.4 0l-40.5-40.5a12.31 \
+12.31 0 0 1 0-17.4l67.1-66.5-67.1-66.5a12.31 12.31 \
+0 0 1 0-17.4l40.5-40.5a12.31 12.31 0 0 1 17.4 0l66.5 \
+67.1 66.5-67.1a12.31 12.31 0 0 1 17.4 0l40.5 \
+40.5a12.31 12.31 0 0 1 0 17.4L313.3 256z');
+
+  g.append(primaryPath);
+  button.append(svg);
+
+  return button;
+}
+
+/* 
+  Create the TOC body.
+*/
+function createTOCBody() {
   // Create the <nav> element that will contain the links.
   let body = document.createElement('NAV');
-  body.id = TOC_BODY_ID;
-  
-  // Append the nav element to the container.
-  container.append(body);
-  
-  // Prepend the container.
-  parent.prepend(container);
+  body.id = '{{ .Specifiers.BodyID }}';
   
   // Fetch eligible headings for link generation.
-  let headings = document.querySelectorAll(HEADING_SEL);
+  let headings = document
+    .querySelectorAll([2,3,4,5,6]
+                      .map(i => `{{ .TOC.SourceSandbox }} h${i}[id]`)
+                      .join(','));
     
   // Create an array for section number tallying.
   let sectionNumbers = [0,0,0,0,0];
@@ -163,181 +301,62 @@ function insertTOC(parent) {
     
     // Create the entry.
     let entry = document.createElement('DIV');
-    entry.classList.add(TOC_ENTRY_CLASS_NAME);
-    entry.classList.add(`${TOC_LEVEL_CLASS_PREFIX}${level}`);
+    entry.classList.add('{{ .Specifiers.TOCEntryClassName }}');
+    entry.classList.add(`${'{{ .Specifiers.LevelClassNamePrefix }}'}${level}`);
         
     // Create the number element.
     let number = document.createElement('SPAN');
     number.innerHTML = sectionNumber;
-    number.className = SECTION_NUMBER_CLASS_NAME;
+    number.className = '{{ .Specifiers.SectionNumberClassName }}';
     
     // Create the anchor element.
     let link = document.createElement('A');
     link.href = `#${heading.id}`;
     link.innerHTML = heading.innerHTML;
     
-    if (TOC_SECTION_NUMBERS) { entry.append(number); }
+{{ if .TOC.SectionNumbers -}} 
+    entry.append(number); 
+{{- end }}
     
     entry.append(link);
         
     // Append the anchor to the <nav> element.
     body.append(entry);
     
-    if (TOC_INJECT_SECTION_NUMBERS) {
-      // Insert the section number into the heading.
-      heading.innerHTML = `<b><i>${sectionNumber}</i></b> ${heading.innerHTML}`;
-    }
+{{ if .TOC.InjectSectionNumbers -}}
+    // Insert the section number into the heading.
+    heading.innerHTML = `<b><i>${sectionNumber}</i></b> ${heading.innerHTML}`;
+{{- end }}
     
-  }
+  }  
   
-  function createCloseButton() {
-    let button = document.createElement('BUTTON');
-    button.id = TOC_CLOSE_BUTTON_ID;
-    button.type = 'button';
-    button.onclick = () => hideTOC();
-    
-    let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('aria-hidden', true);
-    svg.setAttribute('focusable', false);
-    svg.setAttribute('role', 'img');
-    svg.setAttribute('viewBox', '0 0 512 512');
-    
-    let g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    svg.append(g);
-    
-    let secondaryPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    secondaryPath.className = 'secondary';
-    secondaryPath.setAttribute('fill', 'currentColor');
-    secondaryPath.setAttribute('opacity', 0.4);
-    secondaryPath.setAttribute('d', '\
-M464 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 \
-48h416a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48zm-83.6 \
-290.5a12.31 12.31 0 0 1 0 17.4l-40.5 40.5a12.31 12.31 \
-0 0 1-17.4 0L256 313.3l-66.5 67.1a12.31 12.31 0 0 \
-1-17.4 0l-40.5-40.5a12.31 12.31 0 0 1 \
-0-17.4l67.1-66.5-67.1-66.5a12.31 12.31 0 0 1 \
-0-17.4l40.5-40.5a12.31 12.31 0 0 1 17.4 0l66.5 67.1 \
-66.5-67.1a12.31 12.31 0 0 1 17.4 0l40.5 40.5a12.31 \
-12.31 0 0 1 0 17.4L313.3 256z');
-
-    g.append(secondaryPath);
-    
-    let primaryPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    primaryPath.className = 'primary';
-    primaryPath.setAttribute('fill', 'currentColor');
-    primaryPath.setAttribute('d', '\
-M380.4 322.5a12.31 12.31 0 0 1 0 17.4l-40.5 \
-40.5a12.31 12.31 0 0 1-17.4 0L256 313.3l-66.5 \
-67.1a12.31 12.31 0 0 1-17.4 0l-40.5-40.5a12.31 \
-12.31 0 0 1 0-17.4l67.1-66.5-67.1-66.5a12.31 12.31 \
-0 0 1 0-17.4l40.5-40.5a12.31 12.31 0 0 1 17.4 0l66.5 \
-67.1 66.5-67.1a12.31 12.31 0 0 1 17.4 0l40.5 \
-40.5a12.31 12.31 0 0 1 0 17.4L313.3 256z');
-
-    g.append(primaryPath);
-    button.append(svg);
-
-    return button;
-  }
-  
-  function createBackdrop() {
-    // Create the backdrop.
-    let backdrop = document.createElement('DIV');
-    
-    // Store the element for easy access.
-    document[TOC_BACKDROP_ELEMENT] = backdrop;
-    
-    // Set the ID.
-    backdrop.id = TOC_BACKDROP_ID;
-    
-    // Give it the fade class so it's initially hidden.
-    backdrop.className = FADE_CLASS_NAME;
-    
-    // Add a handler for touches/clicks.
-    backdrop.onclick = () => hideTOC();
-      
-    return backdrop;
-  }
-  
+  return body;
 }
 
 /*
-  Generate the toggle button and prepend to 
-  the specified parent element.
+  Create the toggle button.
 */
-function insertTOCToggle(parent) {
+function createTOCToggle() {
   
   // Create the button.
   let toggle = document.createElement('BUTTON');
   
   // Set the ID.
-  toggle.id = TOC_TOGGLE_ID;
+  toggle.id = '{{ .Specifiers.ToggleID }}';
   
   // Set the type.
   toggle.type = 'button';
   
   // Set the button's text.
-  toggle.innerHTML = TOC_TOGGLE_TEXT;
+  toggle.innerHTML = '{{ .TOC.ToggleText }}';
   
   // Connect the button to the element it controls.
-  toggle.setAttribute('aria-controls', TOC_CONTAINER_ID);
+  toggle.setAttribute('aria-controls', '{{ .Specifiers.ContainerID }}');
   
   // Configure the button action.
-  toggle.onclick = () => document[TOC_VISIBLE] ? hideTOC() : showTOC();
+  toggle.onclick = () => document[VISIBLE] ? hideTOC() : showTOC();
     
-  // append the button.
-  parent.append(toggle);
-  
-}
-  
-function showTOC() {
-  
-  // Ensure the table of contents is not already visible.
-  if (document[TOC_VISIBLE]) { return; }
-  
-  // Retrieve the backdrop.
-  let backdrop = document[TOC_BACKDROP_ELEMENT];
-    
-  // Configure the backdrop for visibility.
-  backdrop.classList.add(SHOW_CLASS_NAME);
-  
-  // Retrieve the container.
-  let container = document[TOC_CONTAINER_ELEMENT];
-  
-  // Configure the container for visibility.
-  container.removeAttribute('aria-hidden');
-  container.setAttribute('aria-modal', true);
-  container.setAttribute('role', 'dialog');
-  container.classList.add(SHOW_CLASS_NAME);
-  
-  // Update the property storing the state.
-  document[TOC_VISIBLE] = true;
-  
-}
-
-function hideTOC() {
-  
-  // Ensure the table of contents is actually visible.
-  if (!document[TOC_VISIBLE]) { return; }
-  
-  // Retrieve the backdrop.
-  let backdrop = document[TOC_BACKDROP_ELEMENT];
-    
-  // Configure the backdrop for invisibility.
-  backdrop.classList.remove(SHOW_CLASS_NAME);
-  
-  // Retrieve the container.
-  let container = document[TOC_CONTAINER_ELEMENT];
-  
-  // Configure the container for invisibility.
-  container.setAttribute('aria-hidden', true);
-  container.removeAttribute('aria-modal');
-  container.removeAttribute('role');
-  container.classList.remove(SHOW_CLASS_NAME);
-  
-  // Update the property storing the state.
-  document[TOC_VISIBLE] = false;
-  
+  return toggle;  
 }
 
 class Touch {
@@ -372,6 +391,10 @@ const LEFT_EDGE = Symbol();
 const RIGHT_EDGE = Symbol();
 const EDGES = new Set([LEFT_EDGE, RIGHT_EDGE]);
 
+/*
+  An object for tracking left to right swiping touches 
+  with associated action invocation.
+*/
 class SwipeGesture {
   
   constructor(element, action, edges = EDGES) {
@@ -383,7 +406,7 @@ class SwipeGesture {
     this.edges = new Set([...edges].filter(edge => EDGES.has(edge)));
     
     document.addEventListener('resize', () => {      
-      this.threshold.resize(window.innerWidth)      
+      this.threshold.resize(window.innerWidth)
     });
     
     element.addEventListener('touchstart', event => {
@@ -422,6 +445,7 @@ class SwipeGesture {
         }
       }
       
+            
     });
 
     element.addEventListener('touchend', event => {
@@ -437,3 +461,5 @@ class SwipeGesture {
   }
     
 }
+
+{{- end }}

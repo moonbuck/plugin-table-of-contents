@@ -52,7 +52,7 @@ ToggleParent = '#toc-toggle-container'
 
 # The text displayed by the toggle button.
 #
-ToggleText = 'TOC'
+ToggleText = 'Table of Contents'
 
 # Whether to generate section numbers kinda like:
 # 2 Installation
@@ -122,6 +122,39 @@ Width = '1px'
 # The border color.
 #
 Color = 'rgba(black, .2)'
+
+# TOC toggle button parameters
+#
+[TOC.Style.Toggle]
+
+# The font color to apply. A value of 'null' prevents the generation of 
+# a CSS style rule.
+#
+Color = 'rgba(white, .9)'
+
+# The background color for the header. A value of 'null' prevents 
+# the generation of a CSS style rule.
+#
+BGColor = 'rgba(black, .4)'
+
+# TOC toggle button font style parameters.
+#
+[TOC.Style.Toggle.Font]
+
+# The font size. A value of 'null' prevents the generation of 
+# a CSS style rule.
+#
+Size = 'null'
+
+# The font family. A value of 'null' prevents the generation of 
+# a CSS style rule.
+#
+Family = 'null'
+
+# The font weight. A value of 'null' prevents the generation of 
+# a CSS style rule.
+#
+Weight = 'null'
 
 # TOC header parameters
 #
