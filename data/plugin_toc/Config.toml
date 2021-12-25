@@ -1,6 +1,10 @@
 # Parameters for controlling the generated css and js files
 ###########################################################
 
+# Theme version, printed to HTML comment when the plugin loads.
+#
+Version = '1.0.9'
+
 # Minimum word count for a post page to trigger TOC creation.
 #
 MinWordCount = 400
@@ -26,6 +30,51 @@ SassOutput = 'compact'
 #
 MinifyScript = false
 
-# Theme version, printed to HTML comment when the plugin loads.
+# Parameters controlling the generation of the table of contents.
+#################################################################
+
+# Minimum number of top level sections to insert the TOC.
 #
-Version = '1.0.8'
+MinSections = 2
+
+# Selector used to identify the HTML element whose child headings shall
+# be eligible for inclusion in the table of contents.
+#
+SourceSandbox = '#post-body'
+
+# Selector for identifying the HTML element into which the container
+# shall be prepended.
+#
+ContainerParent = 'body'
+
+# The text displayed within the TOC header.
+#
+TitleText = 'Table of Contents'
+
+# Selector for identifying the HTML element into which the toggle
+# button shall be prepended.
+#
+ToggleParent = '#toc-toggle-container'
+
+# The text displayed by the toggle button.
+#
+ToggleText = 'Table of Contents'
+
+# Whether to generate section numbers kinda like:
+# 2 Installation
+# 3 Structured Data
+#   3.1 The Data … You Know … Structured
+#   3.2 The Payoff?
+# 4 Twitter and Open Graph <meta> Tags
+#   4.1 The Prototypical Previewable Post
+#     4.1.1 The Tags
+#     4.1.2 The Payoff
+#       4.1.2.1 Downsizing
+#   4.2 Audio and Video, Oh My
+#    4.2.1 How It Works
+#
+SectionNumbers = true
+
+# Whether to inject generated section numbers into the original post headings.
+#
+InjectSectionNumbers = true

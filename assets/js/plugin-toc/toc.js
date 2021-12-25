@@ -24,6 +24,10 @@ const ALWAYS_OFFSCREEN = true;
 */
 document.addEventListener('DOMContentLoaded', () => {
 
+  
+  let sectionCount = document.querySelectorAll(`{{ .TOC.Config.SourceSandbox }} h2[id]`).length
+  if (sectionCount < {{ .TOC.Config.MinSections }}) { return; }
+  
   // Establish a parent for the TOC container.
   let parent = document.querySelector('{{ .TOC.Config.ContainerParent }}') ?? document.body;
 
@@ -49,7 +53,7 @@ function configureComponents(parent, toc) {
   // Check whether the TOC fits inside its container
   // and we're flagged to allow for static insertion.
   // If so, just return.
-  if (   geometry.width >= {{ .TOC.Style.Width }} 
+  if (   geometry.width >= {{ .Style.TOC.Width }} 
       && !ALWAYS_OFFSCREEN) 
   { 
     return; 
@@ -325,7 +329,10 @@ function createTOCBody() {
     
 {{ if .TOC.Config.InjectSectionNumbers -}}
     // Insert the section number into the heading.
-    heading.innerHTML = `<b><i>${sectionNumber}</i></b> ${heading.innerHTML}`;
+    let injectedNumber = document.createElement('SPAN');
+    injectedNumber.textContent = sectionNumber;
+    injectedNumber.className = '{{ .Specifiers.InjectedSectionNumberClassName }}';
+    heading.prepend(injectedNumber);
 {{- end }}
     
   }  

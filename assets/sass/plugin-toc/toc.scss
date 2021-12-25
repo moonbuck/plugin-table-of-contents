@@ -4,35 +4,50 @@
 
 /// Plugin parameters stored as Sass variables to utilize
 /// the noop behavior of null values.
-$toc-color: {{ .TOC.Style.Color }};
-$toc-bg-color: {{ .TOC.Style.BGColor }};
-$toc-transition-duration: {{ .TOC.Style.TransitionDuration }};
-$toc-zindex: {{ .TOC.Style.ZIndex }};
-$toc-width: {{ .TOC.Style.Width }}px;
-$toc-padding-y: {{ .TOC.Style.Padding.Y }};
-$toc-padding-x: {{ .TOC.Style.Padding.X }};
-$toc-border-width: {{ .TOC.Style.Border.Width }};
-$toc-border-color: {{ .TOC.Style.Border.Color }};
-$toc-toggle-color: {{ .TOC.Style.Toggle.Color }};
-$toc-toggle-bg-color: {{ .TOC.Style.Toggle.BGColor }};
-$toc-toggle-font-size: {{ .TOC.Style.Toggle.Font.Size }};
-$toc-toggle-font-family: {{ .TOC.Style.Toggle.Font.Family }};
-$toc-toggle-font-weight: {{ .TOC.Style.Toggle.Font.Weight }};
-$toc-header-bg-color: {{ .TOC.Style.Header.BGColor }};
-$toc-title-line-height: {{ .TOC.Style.Title.LineHeight }};
-$toc-title-color: {{ .TOC.Style.Title.Color }};
-$toc-title-font-size: {{ .TOC.Style.Title.Font.Size }};
-$toc-title-font-family: {{ .TOC.Style.Title.Font.Family }};
-$toc-title-font-weight: {{ .TOC.Style.Title.Font.Weight }};
-$toc-link-line-height: {{ .TOC.Style.Link.LineHeight }};
-$toc-link-color: {{ .TOC.Style.Link.Color }};
-$toc-link-indent: {{ .TOC.Style.Link.Indent }};
-$toc-link-font-size: {{ .TOC.Style.Link.Font.Size }};
-$toc-link-font-family: {{ .TOC.Style.Link.Font.Family }};
-$toc-link-font-weight: {{ .TOC.Style.Link.Font.Weight }};
-$toc-backdrop-zindex: {{ .TOC.Style.Backdrop.ZIndex }};
-$toc-backdrop-bg-color: {{ .TOC.Style.Backdrop.BGColor }};
-$toc-backdrop-opacity: {{ .TOC.Style.Backdrop.Opacity }};
+$toc-color: {{ .Style.TOC.Color }};
+$toc-bg-color: {{ .Style.TOC.BGColor }};
+$toc-transition-duration: {{ .Style.TOC.TransitionDuration }};
+$toc-zindex: {{ .Style.TOC.ZIndex }};
+$toc-width: {{ .Style.TOC.Width }}px;
+$toc-padding-y: {{ .Style.TOC.Padding.Y }};
+$toc-padding-x: {{ .Style.TOC.Padding.X }};
+$toc-border-width: {{ .Style.TOC.Border.Width }};
+$toc-border-color: {{ .Style.TOC.Border.Color }};
+$toc-header-bg-color: {{ .Style.TOC.Header.BGColor }};
+$toc-title-line-height: {{ .Style.TOC.Title.LineHeight }};
+$toc-title-color: {{ .Style.TOC.Title.Color }};
+$toc-title-font-size: {{ .Style.TOC.Title.Font.Size }};
+$toc-title-font-family: {{ .Style.TOC.Title.Font.Family }};
+$toc-title-font-weight: {{ .Style.TOC.Title.Font.Weight }};
+$toc-link-line-height: {{ .Style.TOC.Link.LineHeight }};
+$toc-link-color: {{ .Style.TOC.Link.Color }};
+$toc-link-indent: {{ .Style.TOC.Link.Indent }};
+$toc-link-font-size: {{ .Style.TOC.Link.Font.Size }};
+$toc-link-font-family: {{ .Style.TOC.Link.Font.Family }};
+$toc-link-font-weight: {{ .Style.TOC.Link.Font.Weight }};
+$toc-backdrop-zindex: {{ .Style.TOC.Backdrop.ZIndex }};
+$toc-backdrop-bg-color: {{ .Style.TOC.Backdrop.BGColor }};
+$toc-backdrop-opacity: {{ .Style.TOC.Backdrop.Opacity }};
+
+$toggle-color: {{ .Style.Toggle.Color }};
+$toggle-bg-color: {{ .Style.Toggle.BGColor }};
+$toggle-padding-y: {{ .Style.Toggle.Padding.Y }};
+$toggle-padding-x: {{ .Style.Toggle.Padding.X }};
+$toggle-margin-y: {{ .Style.Toggle.Margin.Y }};
+$toggle-margin-x: {{ .Style.Toggle.Margin.X }};
+$toggle-font-size: {{ .Style.Toggle.Font.Size }};
+$toggle-font-family: {{ .Style.Toggle.Font.Family }};
+$toggle-font-weight: {{ .Style.Toggle.Font.Weight }};
+
+$section-number-color: {{ .Style.SectionNumber.Color }};
+$section-number-bg-color: {{ .Style.SectionNumber.BGColor }};
+$section-number-padding-y: {{ .Style.SectionNumber.Padding.Y }};
+$section-number-padding-x: {{ .Style.SectionNumber.Padding.X }};
+$section-number-margin-y: {{ .Style.SectionNumber.Margin.Y }};
+$section-number-margin-x: {{ .Style.SectionNumber.Margin.X }};
+$section-number-font-size: {{ .Style.SectionNumber.Font.Size }};
+$section-number-font-family: {{ .Style.SectionNumber.Font.Family }};
+$section-number-font-weight: {{ .Style.SectionNumber.Font.Weight }};
 
 #{{ .Specifiers.BackdropID }} {
   position: fixed;
@@ -57,14 +72,16 @@ $toc-backdrop-opacity: {{ .TOC.Style.Backdrop.Opacity }};
 
 
 button#{{ .Specifiers.ToggleID }} {
-  background: $toc-toggle-bg-color;
-  color: $toc-toggle-color;
+  background: $toggle-bg-color;
+  color: $toggle-color;
   border: none;
   border-radius: 0;
   white-space: nowrap;
-  font-size: $toc-toggle-font-size;
-  font-weight: $toc-toggle-font-weight;
-  font-family: $toc-toggle-font-family;
+  padding: $toggle-padding-y $toggle-padding-x;
+  margin: $toggle-margin-y $toggle-margin-x;
+  @include font-size($toggle-font-size);
+  font-weight: $toggle-font-weight;
+  font-family: $toggle-font-family;
 }
 
 #{{ .Specifiers.ContainerID }} {
@@ -90,7 +107,6 @@ button#{{ .Specifiers.ToggleID }} {
     &.{{ .Specifiers.ShowClassName }} { transform: none; }
     
   }
-
   
   header#{{ .Specifiers.HeaderID }} {
     position: relative;
