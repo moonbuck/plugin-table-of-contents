@@ -1,0 +1,42 @@
+TOC = '''
+background: white;
+z-index: 1045;
+border-right: 1px solid rgba(black, .2);'''
+
+Header = 'padding: 1rem;'
+
+Title = '''
+margin-bottom: 0;
+line-height: 1.5;'''
+
+CloseButton = '''
+top: .5rem;
+right: .5rem;
+width: 1rem;
+color: lightgray;'''
+
+Body = '''
+padding: 1rem;
+gap: .5rem;'''
+
+Entry = 'gap: 1.5em;'
+
+EntrySection = 'font-style: italic;'
+
+EntryLink = 'line-height: 1.1;'
+
+Backdrop = 'background-color: black;'
+
+Toggle = '''
+color: rgba(white, .9);
+background: rgba(black, .4);
+padding: .25em .5em;
+margin: 0;'''
+
+SectionNumber = 'margin-right: 2em;'
+
+[Variables]
+
+TOCWidth = 400
+LevelIndent = '4px'
+BackdropOpacity = 0.5

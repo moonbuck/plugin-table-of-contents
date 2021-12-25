@@ -1,53 +1,13 @@
 @import "vendor/rfs";
 
+@mixin parameter { @content; }
+
 {{ with .Scratch.Get "plugin-toc.Parameters" }}
 
-/// Plugin parameters stored as Sass variables to utilize
-/// the noop behavior of null values.
-$toc-color: {{ .Style.TOC.Color }};
-$toc-bg-color: {{ .Style.TOC.BGColor }};
-$toc-transition-duration: {{ .Style.TOC.TransitionDuration }};
-$toc-zindex: {{ .Style.TOC.ZIndex }};
-$toc-width: {{ .Style.TOC.Width }}px;
-$toc-padding-y: {{ .Style.TOC.Padding.Y }};
-$toc-padding-x: {{ .Style.TOC.Padding.X }};
-$toc-border-width: {{ .Style.TOC.Border.Width }};
-$toc-border-color: {{ .Style.TOC.Border.Color }};
-$toc-header-bg-color: {{ .Style.TOC.Header.BGColor }};
-$toc-title-line-height: {{ .Style.TOC.Title.LineHeight }};
-$toc-title-color: {{ .Style.TOC.Title.Color }};
-$toc-title-font-size: {{ .Style.TOC.Title.Font.Size }};
-$toc-title-font-family: {{ .Style.TOC.Title.Font.Family }};
-$toc-title-font-weight: {{ .Style.TOC.Title.Font.Weight }};
-$toc-link-line-height: {{ .Style.TOC.Link.LineHeight }};
-$toc-link-color: {{ .Style.TOC.Link.Color }};
-$toc-link-indent: {{ .Style.TOC.Link.Indent }};
-$toc-link-font-size: {{ .Style.TOC.Link.Font.Size }};
-$toc-link-font-family: {{ .Style.TOC.Link.Font.Family }};
-$toc-link-font-weight: {{ .Style.TOC.Link.Font.Weight }};
-$toc-backdrop-zindex: {{ .Style.TOC.Backdrop.ZIndex }};
-$toc-backdrop-bg-color: {{ .Style.TOC.Backdrop.BGColor }};
-$toc-backdrop-opacity: {{ .Style.TOC.Backdrop.Opacity }};
-
-$toggle-color: {{ .Style.Toggle.Color }};
-$toggle-bg-color: {{ .Style.Toggle.BGColor }};
-$toggle-padding-y: {{ .Style.Toggle.Padding.Y }};
-$toggle-padding-x: {{ .Style.Toggle.Padding.X }};
-$toggle-margin-y: {{ .Style.Toggle.Margin.Y }};
-$toggle-margin-x: {{ .Style.Toggle.Margin.X }};
-$toggle-font-size: {{ .Style.Toggle.Font.Size }};
-$toggle-font-family: {{ .Style.Toggle.Font.Family }};
-$toggle-font-weight: {{ .Style.Toggle.Font.Weight }};
-
-$section-number-color: {{ .Style.SectionNumber.Color }};
-$section-number-bg-color: {{ .Style.SectionNumber.BGColor }};
-$section-number-padding-y: {{ .Style.SectionNumber.Padding.Y }};
-$section-number-padding-x: {{ .Style.SectionNumber.Padding.X }};
-$section-number-margin-y: {{ .Style.SectionNumber.Margin.Y }};
-$section-number-margin-x: {{ .Style.SectionNumber.Margin.X }};
-$section-number-font-size: {{ .Style.SectionNumber.Font.Size }};
-$section-number-font-family: {{ .Style.SectionNumber.Font.Family }};
-$section-number-font-weight: {{ .Style.SectionNumber.Font.Weight }};
+/// Variables
+$toc-width: {{ .Style.Variables.TOCWidth }}px;
+$level-indent: {{ .Style.Variables.LevelIndent }};
+$backdrop-opacity: {{ .Style.Variables.BackdropOpacity }};
 
 #{{ .Specifiers.BackdropID }} {
   position: fixed;
@@ -55,7 +15,7 @@ $section-number-font-weight: {{ .Style.SectionNumber.Font.Weight }};
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: $toc-backdrop-bg-color;
+  {{ with .Style.Backdrop }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
 
   // Fade backdrop and lower to prevent click handling.
   &.{{ .Specifiers.FadeClassName }} { 
@@ -65,23 +25,20 @@ $section-number-font-weight: {{ .Style.SectionNumber.Font.Weight }};
   
   // Show and raise to allow click handling.
   &.{{ .Specifiers.ShowClassName }} { 
-    opacity: $toc-backdrop-opacity; 
-    z-index: $toc-backdrop-zindex;
+    opacity: $backdrop-opacity; 
+    z-index: 1040;
   }
 }
 
+span.{{ .Specifiers.InjectedSectionNumberClassName }} {
+ {{ with .Style.SectionNumber }}@include parameter { {{ template "wrap-content" . }} }{{ end }} 
+}
 
 button#{{ .Specifiers.ToggleID }} {
-  background: $toggle-bg-color;
-  color: $toggle-color;
   border: none;
   border-radius: 0;
   white-space: nowrap;
-  padding: $toggle-padding-y $toggle-padding-x;
-  margin: $toggle-margin-y $toggle-margin-x;
-  @include font-size($toggle-font-size);
-  font-weight: $toggle-font-weight;
-  font-family: $toggle-font-family;
+  {{ with .Style.Toggle }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
 }
 
 #{{ .Specifiers.ContainerID }} {
@@ -91,18 +48,15 @@ button#{{ .Specifiers.ToggleID }} {
   width: $toc-width;
   max-width: 100%;
   position: fixed;
-  border-right: $toc-border-width solid $toc-border-color;
   display: flex;
   flex-direction: column;
-  color: $toc-color;
-  background-color: $toc-bg-color;
   background-clip: padding-box;
   outline: 0;
 
   &.{{ .Specifiers.OffscreenClassName }} {
-    z-index: $toc-zindex;
+    z-index: 1045;
     transform: translateX(-100%);
-    transition: transform $toc-transition-duration ease-in-out;
+    transition: transform .3s ease-in-out;
     
     &.{{ .Specifiers.ShowClassName }} { transform: none; }
     
@@ -113,29 +67,20 @@ button#{{ .Specifiers.ToggleID }} {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: $toc-padding-y $toc-padding-x;
-    background: $toc-header-bg-color;
-  
+    {{ with .Style.Header }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
+    
     h2#{{ .Specifiers.TitleID }} {
-      margin-bottom: 0;
-      line-height: $toc-title-line-height;
-      color: $toc-title-color;
-      @include font-size($toc-title-font-size);
-      font-family: $toc-title-font-family;
-      font-weight: $toc-title-font-weight;
+      {{ with .Style.Title }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
     }
     
     button#{{ .Specifiers.CloseButtonID }} {
       position: absolute;      
-      top: $toc-padding-y * .5;
-      right: $toc-padding-x * .5;
       padding: 0;
       margin: 0;
-      width: 1rem;
       background: transparent;
       border: none;
-      color: lightgray;
       visibility: hidden;
+      {{ with .Style.CloseButton }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
       
       @media (max-width: $toc-width + 50) {
         visibility: visible;
@@ -147,7 +92,7 @@ button#{{ .Specifiers.ToggleID }} {
         overflow: visible;
         align-self: center;
         vertical-align: center;
-        fill: lightgray;
+        fill: currentcolor;
       }
       
     } // button#.Specifiers.CloseButtonID
@@ -156,40 +101,35 @@ button#{{ .Specifiers.ToggleID }} {
   
   nav#{{ .Specifiers.BodyID }} {
     flex-grow: 1;
-    padding: $toc-padding-y $toc-padding-x;
     overflow-y: auto;
     display: flex;
     flex-direction: column; 
-    gap: .5rem;
+    {{ with .Style.Body }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
     
     .{{ .Specifiers.TOCEntryClassName }} {
         display: flex;
-        gap: 1.5em;
         align-items: baseline;
+        {{ with .Style.Entry }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
       
         &.{{ .Specifiers.LevelClassNamePrefix }}2 {
-          margin-left: $toc-link-indent * 1;
+          margin-left: $level-indent * 1;
         }
         &.{{ .Specifiers.LevelClassNamePrefix }}3 {
-          margin-left: $toc-link-indent * 2;
+          margin-left: $level-indent * 2;
         }
         &.{{ .Specifiers.LevelClassNamePrefix }}4 {
-          margin-left: $toc-link-indent * 3;
+          margin-left: $level-indent * 3;
         }
         &.{{ .Specifiers.LevelClassNamePrefix }}5 {
-          margin-left: $toc-link-indent * 4;
+          margin-left: $level-indent * 4;
         }
     
         .{{ .Specifiers.SectionNumberClassName }} {
-          font-style: italic;
+          {{ with .Style.EntrySection }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
         }
       
         a {
-          line-height: $toc-link-line-height;
-          color: $toc-link-color;
-          @include font-size($toc-link-font-size);
-          font-family: $toc-link-font-family;
-          font-weight: $toc-link-font-weight;
+          {{ with .Style.EntryLink }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
         }
       
     } // .Specifiers.TOCEntryClassName
@@ -198,4 +138,10 @@ button#{{ .Specifiers.ToggleID }} {
   
 } // #.Specifiers.ContainerID
 
+{{ end }}
+
+{{ define "wrap-content" }}
+{{ $pattern := `font-size:\w*([^;]+)` }}
+{{ $replacement := `@include font-size($1)` }}
+{{ replaceRE $pattern $replacement . }}
 {{ end }}

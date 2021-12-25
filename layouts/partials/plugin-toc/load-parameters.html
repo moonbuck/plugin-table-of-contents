@@ -38,50 +38,19 @@
 {{- $Specifiers_SectionNumberClassName := "section-number" -}}
 {{- $Specifiers_InjectedSectionNumberClassName := "injected-section-number" -}}
 
-{{- $Style_TOC_Color := "null" -}}
-{{- $Style_TOC_BGColor := "white" -}}
-{{- $Style_TOC_TransitionDuration := ".3s" -}}
-{{- $Style_TOC_ZIndex := 1045 -}}
-{{- $Style_TOC_Width := 400 -}}
-{{- $Style_TOC_Padding_Y := "1rem" -}}
-{{- $Style_TOC_Padding_X := "1rem" -}}
-{{- $Style_TOC_Border_Width := "1px" -}}
-{{- $Style_TOC_Border_Color := "rgba(black, .2)" -}}
-{{- $Style_TOC_Header_BGColor := "null" -}}
-{{- $Style_TOC_Title_LineHeight := 1.5 -}}
-{{- $Style_TOC_Title_Color := "null" -}}
-{{- $Style_TOC_Title_Font_Size := "null" -}}
-{{- $Style_TOC_Title_Font_Weight := "null" -}}
-{{- $Style_TOC_Title_Font_Family := "null" -}}
-{{- $Style_TOC_Link_LineHeight := 1.1 -}}
-{{- $Style_TOC_Link_Color := "null" -}}
-{{- $Style_TOC_Link_Indent := "4px" -}}
-{{- $Style_TOC_Link_Font_Size := "null" -}}
-{{- $Style_TOC_Link_Font_Weight := "null" -}}
-{{- $Style_TOC_Link_Font_Family := "null" -}}
-{{- $Style_TOC_Backdrop_ZIndex := 1040 -}}
-{{- $Style_TOC_Backdrop_BGColor := "black" -}}
-{{- $Style_TOC_Backdrop_Opacity := 0.5 -}}
-
-{{- $Style_Toggle_Color := "rgba(white, .9)" -}}
-{{- $Style_Toggle_BGColor := "rgba(black, .4)" -}}
-{{- $Style_Toggle_Padding_Y := "0.25em" -}}
-{{- $Style_Toggle_Padding_X := "0.5em" -}}
-{{- $Style_Toggle_Margin_Y := "0" -}}
-{{- $Style_Toggle_Margin_X := "0" -}}
-{{- $Style_Toggle_Font_Size := "null" -}}
-{{- $Style_Toggle_Font_Weight := "null" -}}
-{{- $Style_Toggle_Font_Family := "null" -}}
-
-{{- $Style_SectionNumber_Color := "null" -}}
-{{- $Style_SectionNumber_BGColor := "null" -}}
-{{- $Style_SectionNumber_Padding_Y := "null" -}}
-{{- $Style_SectionNumber_Padding_X := "null" -}}
-{{- $Style_SectionNumber_Margin_Y := "null" -}}
-{{- $Style_SectionNumber_Margin_X := "null" -}}
-{{- $Style_SectionNumber_Font_Size := "null" -}}
-{{- $Style_SectionNumber_Font_Weight := "null" -}}
-{{- $Style_SectionNumber_Font_Family := "null" -}}
+{{- $Style_TOC := "" -}}
+{{- $Style_Header := "" -}}
+{{- $Style_Title := "" -}}
+{{- $Style_CloseButton := "" -}}
+{{- $Style_Body := "" -}}
+{{- $Style_EntrySection := "" -}}
+{{- $Style_EntryLink := "" -}}
+{{- $Style_Backdrop := "" -}}
+{{- $Style_Toggle := "" -}}
+{{- $Style_SectionNumber := "" -}}
+{{- $Style_Variables_TOCWidth := 400 -}}
+{{- $Style_Variables_LevelIndent := "4px" -}}
+{{- $Style_Variables_BackdropOpacity := 0.5 -}}
 
 {{- /************************************************
   Override the default parameter values with values
@@ -176,133 +145,44 @@
 {{- $Specifiers_InjectedSectionNumberClassName = . -}}
 {{- end -}}
 
-{{- with .Style.TOC.Color -}}
-{{- $Style_TOC_Color = . -}}
+{{- with .Style.TOC -}}
+{{- $Style_TOC = . -}}
 {{- end -}}
-{{- with .Style.TOC.BGColor -}}
-{{- $Style_TOC_BGColor = . -}}
+{{- with .Style.Header -}}
+{{- $Style_Header = . -}}
 {{- end -}}
-{{- with .Style.TOC.TransitionDuration -}}
-{{- $Style_TOC_TransitionDuration = . -}}
+{{- with .Style.Title -}}
+{{- $Style_Title = . -}}
 {{- end -}}
-{{- with .Style.TOC.ZIndex -}}
-{{- $Style_TOC_ZIndex = . -}}
+{{- with .Style.CloseButton -}}
+{{- $Style_CloseButton = . -}}
 {{- end -}}
-{{- with .Style.TOC.Width -}}
-{{- $Style_TOC_Width = . -}}
+{{- with .Style.Body -}}
+{{- $Style_Body = . -}}
 {{- end -}}
-{{- with .Style.TOC.Padding.Y -}}
-{{- $Style_TOC_Padding_Y = . -}}
+{{- with .Style.EntrySection -}}
+{{- $Style_EntrySection = . -}}
 {{- end -}}
-{{- with .Style.TOC.Padding.X -}}
-{{- $Style_TOC_Padding_X = . -}}
+{{- with .Style.EntryLink -}}
+{{- $Style_EntryLink = . -}}
 {{- end -}}
-{{- with .Style.TOC.Border.Width -}}
-{{- $Style_TOC_Border_Width = . -}}
+{{- with .Style.Backdrop -}}
+{{- $Style_Backdrop = . -}}
 {{- end -}}
-{{- with .Style.TOC.Border.Color -}}
-{{- $Style_TOC_Border_Color = . -}}
+{{- with .Style.Toggle -}}
+{{- $Style_Toggle = . -}}
 {{- end -}}
-{{- with .Style.TOC.Header.BGColor -}}
-{{- $Style_TOC_Header_BGColor = . -}}
+{{- with .Style.SectionNumber -}}
+{{- $Style_SectionNumber = . -}}
 {{- end -}}
-{{- with .Style.TOC.Title.LineHeight -}}
-{{- $Style_TOC_Title_LineHeight = . -}}
+{{- with .Style.Variables.TOCWidth -}}
+{{- $Style_Variables_TOCWidth = . -}}
 {{- end -}}
-{{- with .Style.TOC.Title.Color -}}
-{{- $Style_TOC_Title_Color = . -}}
+{{- with .Style.Variables.LevelIndent -}}
+{{- $Style_Variables_LevelIndent = . -}}
 {{- end -}}
-{{- with .Style.TOC.Title.Font.Size -}}
-{{- $Style_TOC_Title_Font_Size = . -}}
-{{- end -}}
-{{- with .Style.TOC.Title.Font.Weight -}}
-{{- $Style_TOC_Title_Font_Weight = . -}}
-{{- end -}}
-{{- with .Style.TOC.Title.Font.Family -}}
-{{- $Style_TOC_Title_Font_Family = . -}}
-{{- end -}}
-{{- with .Style.TOC.Link.LineHeight -}}
-{{- $Style_TOC_Link_LineHeight = . -}}
-{{- end -}}
-{{- with .Style.TOC.Link.Color -}}
-{{- $Style_TOC_Link_Color = . -}}
-{{- end -}}
-{{- with .Style.TOC.Link.Indent -}}
-{{- $Style_TOC_Link_Indent = . -}}
-{{- end -}}
-{{- with .Style.TOC.Link.Font.Size -}}
-{{- $Style_TOC_Link_Font_Size = . -}}
-{{- end -}}
-{{- with .Style.TOC.Link.Font.Weight -}}
-{{- $Style_TOC_Link_Font_Weight = . -}}
-{{- end -}}
-{{- with .Style.TOC.Link.Font.Family -}}
-{{- $Style_TOC_Link_Font_Family = . -}}
-{{- end -}}
-{{- with .Style.TOC.Backdrop.ZIndex -}}
-{{- $Style_TOC_Backdrop_ZIndex = . -}}
-{{- end -}}
-{{- with .Style.TOC.Backdrop.BGColor -}}
-{{- $Style_TOC_Backdrop_BGColor = . -}}
-{{- end -}}
-{{- with .Style.TOC.Backdrop.Opacity -}}
-{{- $Style_TOC_Backdrop_Opacity = . -}}
-{{- end -}}
-
-{{- with .Style.Toggle.Color -}}
-{{- $Style_Toggle_Color = . -}}
-{{- end -}}
-{{- with .Style.Toggle.BGColor -}}
-{{- $Style_Toggle_BGColor = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Padding.Y -}}
-{{- $Style_Toggle_Padding_Y = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Padding.X -}}
-{{- $Style_Toggle_Padding_X = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Margin.Y -}}
-{{- $Style_Toggle_Margin_Y = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Margin.X -}}
-{{- $Style_Toggle_Margin_X = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Font.Size -}}
-{{- $Style_Toggle_Font_Size = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Font.Weight -}}
-{{- $Style_Toggle_Font_Weight = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Font.Family -}}
-{{- $Style_Toggle_Font_Family = . -}}
-{{- end -}}
-
-{{- with .Style.SectionNumber.Color -}}
-{{- $Style_SectionNumber_Color = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.BGColor -}}
-{{- $Style_SectionNumber_BGColor = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Padding.Y -}}
-{{- $Style_SectionNumber_Padding_Y = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Padding.X -}}
-{{- $Style_SectionNumber_Padding_X = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Margin.Y -}}
-{{- $Style_SectionNumber_Margin_Y = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Margin.X -}}
-{{- $Style_SectionNumber_Margin_X = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Font.Size -}}
-{{- $Style_SectionNumber_Font_Size = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Font.Weight -}}
-{{- $Style_SectionNumber_Font_Weight = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Font.Family -}}
-{{- $Style_SectionNumber_Font_Family = . -}}
+{{- with .Style.Variables.BackdropOpacity -}}
+{{- $Style_Variables_BackdropOpacity = . -}}
 {{- end -}}
 
 {{- end -}} {{- /* with site.Data.plugin_toc */ -}}
@@ -400,133 +280,44 @@
 {{- $Specifiers_InjectedSectionNumberClassName = . -}}
 {{- end -}}
 
-{{- with .Style.TOC.Color -}}
-{{- $Style_TOC_Color = . -}}
+{{- with .Style.TOC -}}
+{{- $Style_TOC = . -}}
 {{- end -}}
-{{- with .Style.TOC.BGColor -}}
-{{- $Style_TOC_BGColor = . -}}
+{{- with .Style.Header -}}
+{{- $Style_Header = . -}}
 {{- end -}}
-{{- with .Style.TOC.TransitionDuration -}}
-{{- $Style_TOC_TransitionDuration = . -}}
+{{- with .Style.Title -}}
+{{- $Style_Title = . -}}
 {{- end -}}
-{{- with .Style.TOC.ZIndex -}}
-{{- $Style_TOC_ZIndex = . -}}
+{{- with .Style.CloseButton -}}
+{{- $Style_CloseButton = . -}}
 {{- end -}}
-{{- with .Style.TOC.Width -}}
-{{- $Style_TOC_Width = . -}}
+{{- with .Style.Body -}}
+{{- $Style_Body = . -}}
 {{- end -}}
-{{- with .Style.TOC.Padding.Y -}}
-{{- $Style_TOC_Padding_Y = . -}}
+{{- with .Style.EntrySection -}}
+{{- $Style_EntrySection = . -}}
 {{- end -}}
-{{- with .Style.TOC.Padding.X -}}
-{{- $Style_TOC_Padding_X = . -}}
+{{- with .Style.EntryLink -}}
+{{- $Style_EntryLink = . -}}
 {{- end -}}
-{{- with .Style.TOC.Border.Width -}}
-{{- $Style_TOC_Border_Width = . -}}
+{{- with .Style.Backdrop -}}
+{{- $Style_Backdrop = . -}}
 {{- end -}}
-{{- with .Style.TOC.Border.Color -}}
-{{- $Style_TOC_Border_Color = . -}}
+{{- with .Style.Toggle -}}
+{{- $Style_Toggle = . -}}
 {{- end -}}
-{{- with .Style.TOC.Header.BGColor -}}
-{{- $Style_TOC_Header_BGColor = . -}}
+{{- with .Style.SectionNumber -}}
+{{- $Style_SectionNumber = . -}}
 {{- end -}}
-{{- with .Style.TOC.Title.LineHeight -}}
-{{- $Style_TOC_Title_LineHeight = . -}}
+{{- with .Style.Variables.TOCWidth -}}
+{{- $Style_Variables_TOCWidth = . -}}
 {{- end -}}
-{{- with .Style.TOC.Title.Color -}}
-{{- $Style_TOC_Title_Color = . -}}
+{{- with .Style.Variables.LevelIndent -}}
+{{- $Style_Variables_LevelIndent = . -}}
 {{- end -}}
-{{- with .Style.TOC.Title.Font.Size -}}
-{{- $Style_TOC_Title_Font_Size = . -}}
-{{- end -}}
-{{- with .Style.TOC.Title.Font.Weight -}}
-{{- $Style_TOC_Title_Font_Weight = . -}}
-{{- end -}}
-{{- with .Style.TOC.Title.Font.Family -}}
-{{- $Style_TOC_Title_Font_Family = . -}}
-{{- end -}}
-{{- with .Style.TOC.Link.LineHeight -}}
-{{- $Style_TOC_Link_LineHeight = . -}}
-{{- end -}}
-{{- with .Style.TOC.Link.Color -}}
-{{- $Style_TOC_Link_Color = . -}}
-{{- end -}}
-{{- with .Style.TOC.Link.Indent -}}
-{{- $Style_TOC_Link_Indent = . -}}
-{{- end -}}
-{{- with .Style.TOC.Link.Font.Size -}}
-{{- $Style_TOC_Link_Font_Size = . -}}
-{{- end -}}
-{{- with .Style.TOC.Link.Font.Weight -}}
-{{- $Style_TOC_Link_Font_Weight = . -}}
-{{- end -}}
-{{- with .Style.TOC.Link.Font.Family -}}
-{{- $Style_TOC_Link_Font_Family = . -}}
-{{- end -}}
-{{- with .Style.TOC.Backdrop.ZIndex -}}
-{{- $Style_TOC_Backdrop_ZIndex = . -}}
-{{- end -}}
-{{- with .Style.TOC.Backdrop.BGColor -}}
-{{- $Style_TOC_Backdrop_BGColor = . -}}
-{{- end -}}
-{{- with .Style.TOC.Backdrop.Opacity -}}
-{{- $Style_TOC_Backdrop_Opacity = . -}}
-{{- end -}}
-
-{{- with .Style.Toggle.Color -}}
-{{- $Style_Toggle_Color = . -}}
-{{- end -}}
-{{- with .Style.Toggle.BGColor -}}
-{{- $Style_Toggle_BGColor = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Padding.Y -}}
-{{- $Style_Toggle_Padding_Y = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Padding.X -}}
-{{- $Style_Toggle_Padding_X = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Margin.Y -}}
-{{- $Style_Toggle_Margin_Y = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Margin.X -}}
-{{- $Style_Toggle_Margin_X = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Font.Size -}}
-{{- $Style_Toggle_Font_Size = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Font.Weight -}}
-{{- $Style_Toggle_Font_Weight = . -}}
-{{- end -}}
-{{- with .Style.Toggle.Font.Family -}}
-{{- $Style_Toggle_Font_Family = . -}}
-{{- end -}}
-
-{{- with .Style.SectionNumber.Color -}}
-{{- $Style_SectionNumber_Color = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.BGColor -}}
-{{- $Style_SectionNumber_BGColor = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Padding.Y -}}
-{{- $Style_SectionNumber_Padding_Y = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Padding.X -}}
-{{- $Style_SectionNumber_Padding_X = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Margin.Y -}}
-{{- $Style_SectionNumber_Margin_Y = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Margin.X -}}
-{{- $Style_SectionNumber_Margin_X = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Font.Size -}}
-{{- $Style_SectionNumber_Font_Size = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Font.Weight -}}
-{{- $Style_SectionNumber_Font_Weight = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber.Font.Family -}}
-{{- $Style_SectionNumber_Font_Family = . -}}
+{{- with .Style.Variables.BackdropOpacity -}}
+{{- $Style_Variables_BackdropOpacity = . -}}
 {{- end -}}
 
 {{- end -}} {{- /* with (index site.Data "plugin-toc") */ -}}
@@ -540,78 +331,14 @@
   Config
   Specifiers
   Style
-    TOC
-      Padding
-      Border
-      Header
-      Title
-        Font
-      Link
-        Font
-      Backdrop
-    Toggle
-      Padding
-      Margin
-      Font
-    SectionNumber
-      Padding
-      Margin
-      Font        
-  *********************************************************/ -}}
+    Variables
+ *********************************************************/ -}}
   
-{{- /* Style.SectionNumber.Font */ -}}
-{{- $Style_SectionNumber_Font := dict "Size" $Style_SectionNumber_Font_Size "Family" $Style_SectionNumber_Font_Family "Weight" $Style_SectionNumber_Font_Weight -}}
-
-{{- /* Style.SectionNumber.Margin */ -}}
-{{- $Style_SectionNumber_Margin := dict "Y" $Style_SectionNumber_Margin_Y "X" $Style_SectionNumber_Margin_X -}}
-
-{{- /* Style.SectionNumber.Padding */ -}}
-{{- $Style_SectionNumber_Padding := dict "Y" $Style_SectionNumber_Padding_Y "X" $Style_SectionNumber_Padding_X -}}
-
-{{- /* Style.SectionNumber */ -}}
-{{- $Style_SectionNumber := dict "Color" $Style_SectionNumber_Color "BGColor" $Style_SectionNumber_BGColor "Padding" $Style_SectionNumber_Padding "Margin" $Style_SectionNumber_Margin "Font" $Style_SectionNumber_Font -}}
-
-{{- /* Style.Toggle.Font */ -}}
-{{- $Style_Toggle_Font := dict "Size" $Style_Toggle_Font_Size "Family" $Style_Toggle_Font_Family "Weight" $Style_Toggle_Font_Weight -}}
-
-{{- /* Style.Toggle.Margin */ -}}
-{{- $Style_Toggle_Margin := dict "Y" $Style_Toggle_Margin_Y "X" $Style_Toggle_Margin_X -}}
-
-{{- /* Style.Toggle.Padding */ -}}
-{{- $Style_Toggle_Padding := dict "Y" $Style_Toggle_Padding_Y "X" $Style_Toggle_Padding_X -}}
-
-{{- /* Style.Toggle */ -}}
-{{- $Style_Toggle := dict "Color" $Style_Toggle_Color "BGColor" $Style_Toggle_BGColor "Padding" $Style_Toggle_Padding "Margin" $Style_Toggle_Margin "Font" $Style_Toggle_Font -}}
-
-{{- /* Style.TOC.Backrop */ -}}
-{{- $Style_TOC_Backdrop := dict "ZIndex" $Style_TOC_Backdrop_ZIndex "BGColor" $Style_TOC_Backdrop_BGColor "Opacity" $Style_TOC_Backdrop_Opacity -}}
-
-{{- /* Style.TOC.Link.Font */ -}}
-{{- $Style_TOC_Link_Font := dict "Size" $Style_TOC_Link_Font_Size "Family" $Style_TOC_Link_Font_Family "Weight" $Style_TOC_Link_Font_Weight -}}
-
-{{- /* Style.TOC.Link */ -}}
-{{- $Style_TOC_Link := dict "LineHeight" $Style_TOC_Link_LineHeight "Color" $Style_TOC_Link_Color "Indent" $Style_TOC_Link_Indent "Font" $Style_TOC_Link_Font -}}
-
-{{- /* Style.TOC.Title.Font */ -}}
-{{- $Style_TOC_Title_Font := dict "Size" $Style_TOC_Title_Font_Size "Family" $Style_TOC_Title_Font_Family "Weight" $Style_TOC_Title_Font_Weight -}}
-
-{{- /* Style.TOC.Title */ -}}
-{{- $Style_TOC_Title := dict "LineHeight" $Style_TOC_Title_LineHeight "Color" $Style_TOC_Title_Color "Font" $Style_TOC_Title_Font -}}
-
-{{- /* Style.TOC.Header */ -}}
-{{- $Style_TOC_Header := dict "BGColor" $Style_TOC_Header_BGColor -}}
-
-{{- /* Style.TOC.Border */ -}}
-{{- $Style_TOC_Border := dict "Width" $Style_TOC_Border_Width "Color" $Style_TOC_Border_Color -}}
-
-{{- /* Style.TOC.Padding */ -}}
-{{- $Style_TOC_Padding := dict "Y" $Style_TOC_Padding_Y "X" $Style_TOC_Padding_X -}}
-
-{{- /* Style.TOC */ -}}
-{{- $Style_TOC := dict "Color" $Style_TOC_Color "BGColor" $Style_TOC_BGColor "TransitionDuration" $Style_TOC_TransitionDuration "ZIndex" $Style_TOC_ZIndex "Width" $Style_TOC_Width "Padding" $Style_TOC_Padding "Border" $Style_TOC_Border "Header" $Style_TOC_Header "Title" $Style_TOC_Title "Link" $Style_TOC_Link "Backdrop" $Style_TOC_Backdrop -}}
+{{- /* Style.Variables */ -}}
+{{- $Style_Variables := dict "TOCWidth" $Style_Variables_TOCWidth "LevelIndent" $Style_Variables_LevelIndent "BackdropOpacity" $Style_Variables_BackdropOpacity -}}
 
 {{- /* Style */ -}}
-{{- $Style := dict "TOC" $Style_TOC "Toggle" $Style_Toggle "SectionNumber" $Style_SectionNumber -}}
+{{- $Style := dict "TOC" $Style_TOC "Header" $Style_Header "Title" $Style_Title "CloseButton" $Style_CloseButton "Body" $Style_Body "EntrySection" $Style_EntrySection "EntryLink" $Style_EntryLink "Backdrop" $Style_Backdrop "Toggle" $Style_Toggle "SectionNumber" $Style_SectionNumber "Variables" $Style_Variables -}}
 
 {{- /* Specifiers */ -}}
 {{- $Specifiers := dict "BackdropID" $Specifiers_BackdropID "ContainerID" $Specifiers_ContainerID "HeaderID" $Specifiers_HeaderID "TitleID" $Specifiers_TitleID "CloseButtonID" $Specifiers_CloseButtonID "BodyID" $Specifiers_BodyID "ToggleID" $Specifiers_ToggleID "LevelClassNamePrefix" $Specifiers_LevelClassNamePrefix "FadeClassName" $Specifiers_FadeClassName "ShowClassName" $Specifiers_ShowClassName "OffscreenClassName" $Specifiers_OffscreenClassName "TOCEntryClassName" $Specifiers_TOCEntryClassName "SectionNumberClassName" $Specifiers_SectionNumberClassName "InjectedSectionNumberClassName" $Specifiers_InjectedSectionNumberClassName -}}
@@ -626,4 +353,4 @@
   Insert the parameter map into the page scratch.
   ***********************************************/ -}}
   
-  {{- .Scratch.Set "plugin-toc.Parameters" $Parameters -}}
+{{- .Scratch.Set "plugin-toc.Parameters" $Parameters -}}

@@ -25,11 +25,11 @@ const ALWAYS_OFFSCREEN = true;
 document.addEventListener('DOMContentLoaded', () => {
 
   
-  let sectionCount = document.querySelectorAll(`{{ .TOC.Config.SourceSandbox }} h2[id]`).length
-  if (sectionCount < {{ .TOC.Config.MinSections }}) { return; }
+  let sectionCount = document.querySelectorAll(`{{ .Config.SourceSandbox }} h2[id]`).length
+  if (sectionCount < {{ .Config.MinSections }}) { return; }
   
   // Establish a parent for the TOC container.
-  let parent = document.querySelector('{{ .TOC.Config.ContainerParent }}') ?? document.body;
+  let parent = document.querySelector('{{ .Config.ContainerParent }}') ?? document.body;
 
   // Create the container.
   let container = createTOCContainer();
@@ -53,7 +53,7 @@ function configureComponents(parent, toc) {
   // Check whether the TOC fits inside its container
   // and we're flagged to allow for static insertion.
   // If so, just return.
-  if (   geometry.width >= {{ .Style.TOC.Width }} 
+  if (   geometry.width >= {{ .Style.Variables.TOCWidth }} 
       && !ALWAYS_OFFSCREEN) 
   { 
     return; 
@@ -69,7 +69,7 @@ function configureComponents(parent, toc) {
   document[VISIBLE] = false;
   
   // Insert the button for toggling the TOC.
-  let toggleParent = document.querySelector('{{ .TOC.Config.ToggleParent }}');
+  let toggleParent = document.querySelector('{{ .Config.ToggleParent }}');
   toggleParent?.append(createTOCToggle());
   
   // Hide the TOC on selection.
@@ -208,7 +208,7 @@ function createTitle() {
   // Create the table of contents title.
   let title = document.createElement('H2');
   title.id = '{{ .Specifiers.TitleID }}';
-  title.innerHTML = `<nobr>{{ .TOC.Config.TitleText }}</nobr>`;
+  title.innerHTML = `<nobr>{{ .Config.TitleText }}</nobr>`;
   return title;
 }
 
@@ -278,7 +278,7 @@ function createTOCBody() {
   // Fetch eligible headings for link generation.
   let headings = document
     .querySelectorAll([2,3,4,5,6]
-                      .map(i => `{{ .TOC.Config.SourceSandbox }} h${i}[id]`)
+                      .map(i => `{{ .Config.SourceSandbox }} h${i}[id]`)
                       .join(','));
     
   // Create an array for section number tallying.
@@ -318,7 +318,7 @@ function createTOCBody() {
     link.href = `#${heading.id}`;
     link.innerHTML = heading.innerHTML;
     
-{{ if .TOC.Config.SectionNumbers -}} 
+{{ if .Config.SectionNumbers -}} 
     entry.append(number); 
 {{- end }}
     
@@ -327,7 +327,7 @@ function createTOCBody() {
     // Append the anchor to the <nav> element.
     body.append(entry);
     
-{{ if .TOC.Config.InjectSectionNumbers -}}
+{{ if .Config.InjectSectionNumbers -}}
     // Insert the section number into the heading.
     let injectedNumber = document.createElement('SPAN');
     injectedNumber.textContent = sectionNumber;
@@ -355,7 +355,7 @@ function createTOCToggle() {
   toggle.type = 'button';
   
   // Set the button's text.
-  toggle.innerHTML = '{{ .TOC.Config.ToggleText }}';
+  toggle.innerHTML = '{{ .Config.ToggleText }}';
   
   // Connect the button to the element it controls.
   toggle.setAttribute('aria-controls', '{{ .Specifiers.ContainerID }}');
