@@ -2,94 +2,39 @@
 
 {{ with .Scratch.Get "plugin-toc.Parameters" }}
 
-///Specifiers used to select the HTML elements.
-{{ with .Specifiers }}
-$toc-backdrop-id: {{ .BackdropID }};
-$toc-container-id: {{ .ContainerID }};
-$toc-header-id: {{ .HeaderID }};
-$toc-title-id: {{ .TitleID }};
-$toc-close-button-id: {{ .CloseButtonID }};
-$toc-body-id: {{ .BodyID }};
-$toc-toggle-id: {{ .ToggleID }};
-$toc-level-class-prefix: {{ .LevelClassNamePrefix }};
-$fade-class-name: {{ .FadeClassName }};
-$show-class-name: {{ .ShowClassName }};
-$offscreen-class-name: {{ .OffscreenClassName }};
-$toc-entry-class-name: {{ .TOCEntryClassName }};
-$section-number-class-name: {{ .SectionNumberClassName }};
-{{ end }}
+/// Plugin parameters stored as Sass variables to utilize
+/// the noop behavior of null values.
+$toc-color: {{ .TOC.Style.Color }};
+$toc-bg-color: {{ .TOC.Style.BGColor }};
+$toc-transition-duration: {{ .TOC.Style.TransitionDuration }};
+$toc-zindex: {{ .TOC.Style.ZIndex }};
+$toc-width: {{ .TOC.Style.Width }}px;
+$toc-padding-y: {{ .TOC.Style.Padding.Y }};
+$toc-padding-x: {{ .TOC.Style.Padding.X }};
+$toc-border-width: {{ .TOC.Style.Border.Width }};
+$toc-border-color: {{ .TOC.Style.Border.Color }};
+$toc-toggle-color: {{ .TOC.Style.Toggle.Color }};
+$toc-toggle-bg-color: {{ .TOC.Style.Toggle.BGColor }};
+$toc-toggle-font-size: {{ .TOC.Style.Toggle.Font.Size }};
+$toc-toggle-font-family: {{ .TOC.Style.Toggle.Font.Family }};
+$toc-toggle-font-weight: {{ .TOC.Style.Toggle.Font.Weight }};
+$toc-header-bg-color: {{ .TOC.Style.Header.BGColor }};
+$toc-title-line-height: {{ .TOC.Style.Title.LineHeight }};
+$toc-title-color: {{ .TOC.Style.Title.Color }};
+$toc-title-font-size: {{ .TOC.Style.Title.Font.Size }};
+$toc-title-font-family: {{ .TOC.Style.Title.Font.Family }};
+$toc-title-font-weight: {{ .TOC.Style.Title.Font.Weight }};
+$toc-link-line-height: {{ .TOC.Style.Link.LineHeight }};
+$toc-link-color: {{ .TOC.Style.Link.Color }};
+$toc-link-indent: {{ .TOC.Style.Link.Indent }};
+$toc-link-font-size: {{ .TOC.Style.Link.Font.Size }};
+$toc-link-font-family: {{ .TOC.Style.Link.Font.Family }};
+$toc-link-font-weight: {{ .TOC.Style.Link.Font.Weight }};
+$toc-backdrop-zindex: {{ .TOC.Style.Backdrop.ZIndex }};
+$toc-backdrop-bg-color: {{ .TOC.Style.Backdrop.BGColor }};
+$toc-backdrop-opacity: {{ .TOC.Style.Backdrop.Opacity }};
 
-/// Style parameters
-{{ with .TOC.Style }}
-
-$toc-color: {{ .Color }};
-$toc-bg-color: {{ .BGColor }};
-$toc-transition-duration: {{ .TransitionDuration }};
-$toc-zindex: {{ .ZIndex }};
-$toc-width: {{ .Width }}px;
-
-{{ with .Padding }}
-$toc-padding-y: {{ .Y }};
-$toc-padding-x: {{ .X }};
-{{ end }}
-
-{{ with .Border }}
-$toc-border-width: {{ .Width }};
-$toc-border-color: {{ .Color }};
-{{ end }}
-
-{{ with .Toggle }}
-$toc-toggle-color: {{ .Color }};
-$toc-toggle-bg-color: {{ . BGColor }};
-
-{{ with .Font }}
-$toc-toggle-font-size: {{ .Size }};
-$toc-toggle-font-family: {{ .Family }};
-$toc-toggle-font-weight: {{ .Weight }};
-{{ end }}
-
-{{ end }}
-
-{{ with .Header }}
-$toc-header-bg-color: {{ .BGColor }};
-{{ end }}
-
-{{ with .Title }}
-$toc-title-line-height: {{ .LineHeight }};
-$toc-title-color: {{ .Color }};
-
-{{ with .Font }}
-$toc-title-font-size: {{ .Size }};
-$toc-title-font-family: {{ .Family }};
-$toc-title-font-weight: {{ .Weight }};
-{{ end }}
-
-{{ end }}
-
-{{ with .Link }}
-$toc-link-line-height: {{ .LineHeight }};
-$toc-link-color: {{ .Color }};
-$toc-link-indent: {{ .Indent }};
-
-{{ with .Font }}
-$toc-link-font-size: {{ .Size }};
-$toc-link-font-family: {{ .Family }};
-$toc-link-font-weight: {{ .Weight }};
-{{ end }}
-
-{{ end }}
-
-{{ with .Backdrop }}
-$toc-backdrop-zindex: {{ .ZIndex }};
-$toc-backdrop-bg-color: {{ .BGColor }};
-$toc-backdrop-opacity: {{ .Opacity }};
-{{ end }}
-
-{{ end }}
-
-{{ end }}
-
-##{$toc-backdrop-id} {
+#{{ .Specifiers.BackdropID }} {
   position: fixed;
   top: 0;
   left: 0;
@@ -98,30 +43,31 @@ $toc-backdrop-opacity: {{ .Opacity }};
   background-color: $toc-backdrop-bg-color;
 
   // Fade backdrop and lower to prevent click handling.
-  &.#{$fade-class-name} { 
+  &.{{ .Specifiers.FadeClassName }} { 
     opacity: 0; 
     z-index: -1;
   }
   
   // Show and raise to allow click handling.
-  &.#{$show-class-name} { 
+  &.{{ .Specifiers.ShowClassName }} { 
     opacity: $toc-backdrop-opacity; 
     z-index: $toc-backdrop-zindex;
   }
 }
 
-button##{$toc-toggle-id} {
+
+button#{{ .Specifiers.ToggleID }} {
   background: $toc-toggle-bg-color;
   color: $toc-toggle-color;
   border: none;
-  background-radius: 0;
+  border-radius: 0;
   white-space: nowrap;
   font-size: $toc-toggle-font-size;
   font-weight: $toc-toggle-font-weight;
   font-family: $toc-toggle-font-family;
 }
-    
-##{$toc-container-id} {
+
+#{{ .Specifiers.ContainerID }} {
   top: 0;
   left: 0;
   bottom: 0;
@@ -136,16 +82,17 @@ button##{$toc-toggle-id} {
   background-clip: padding-box;
   outline: 0;
 
-  &.#{$offscreen-class-name} {
+  &.{{ .Specifiers.OffscreenClassName }} {
     z-index: $toc-zindex;
     transform: translateX(-100%);
     transition: transform $toc-transition-duration ease-in-out;
     
-    &.#{$show-class-name} { transform: none; }
+    &.{{ .Specifiers.ShowClassName }} { transform: none; }
     
   }
+
   
-  header##{$toc-header-id} {
+  header#{{ .Specifiers.HeaderID }} {
     position: relative;
     display: flex;
     align-items: center;
@@ -153,7 +100,7 @@ button##{$toc-toggle-id} {
     padding: $toc-padding-y $toc-padding-x;
     background: $toc-header-bg-color;
   
-    h2##{$toc-title-id} {
+    h2#{{ .Specifiers.TitleID }} {
       margin-bottom: 0;
       line-height: $toc-title-line-height;
       color: $toc-title-color;
@@ -162,7 +109,7 @@ button##{$toc-toggle-id} {
       font-weight: $toc-title-font-weight;
     }
     
-    button##{$toc-close-button-id} {
+    button#{{ .Specifiers.CloseButtonID }} {
       position: absolute;      
       top: $toc-padding-y * .5;
       right: $toc-padding-x * .5;
@@ -187,11 +134,11 @@ button##{$toc-toggle-id} {
         fill: lightgray;
       }
       
-    } // button##{$toc-close-button-id}
+    } // button#.Specifiers.CloseButtonID
 
-  } // header##{$toc-header-id}
-
-  nav##{$toc-body-id} {
+  } // header#.Specifiers.HeaderID
+  
+  nav#{{ .Specifiers.BodyID }} {
     flex-grow: 1;
     padding: $toc-padding-y $toc-padding-x;
     overflow-y: auto;
@@ -199,25 +146,25 @@ button##{$toc-toggle-id} {
     flex-direction: column; 
     gap: .5rem;
     
-    .#{$toc-entry-class-name} {
+    .{{ .Specifiers.TOCEntryClassName }} {
         display: flex;
         gap: 1.5em;
         align-items: baseline;
       
-        &.#{$toc-level-class-prefix}2 {
+        &.{{ .Specifiers.LevelClassNamePrefix }}2 {
           margin-left: $toc-link-indent * 1;
         }
-        &.#{$toc-level-class-prefix}3 {
+        &.{{ .Specifiers.LevelClassNamePrefix }}3 {
           margin-left: $toc-link-indent * 2;
         }
-        &.#{$toc-level-class-prefix}4 {
+        &.{{ .Specifiers.LevelClassNamePrefix }}4 {
           margin-left: $toc-link-indent * 3;
         }
-        &.#{$toc-level-class-prefix}5 {
+        &.{{ .Specifiers.LevelClassNamePrefix }}5 {
           margin-left: $toc-link-indent * 4;
         }
     
-        .#{$section-number-class-name} {
+        .{{ .Specifiers.SectionNumberClassName }} {
           font-style: italic;
         }
       
@@ -229,8 +176,10 @@ button##{$toc-toggle-id} {
           font-weight: $toc-link-font-weight;
         }
       
-    } // .#{$toc-entry-class-name}
+    } // .Specifiers.TOCEntryClassName
     
-  } // nav##{$toc-body-id}
+  } // nav#.Specifiers.BodyID
   
-} // ##{$toc-container-id}
+} // #.Specifiers.ContainerID
+
+{{ end }}

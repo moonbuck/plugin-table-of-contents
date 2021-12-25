@@ -1,0 +1,31 @@
+# Parameters for controlling the generated css and js files
+###########################################################
+
+# Minimum word count for a post page to trigger TOC creation.
+#
+MinWordCount = 400
+
+# Whether to print HTML comments for debugging purposes.
+#
+DebugPrint = false
+
+# Whether to provide subresource integrity by generating a 
+# base64-encoded cryptographic hash and attaching a .Data.Integrity
+# property containing an integrity string, which is made up of the
+# name of the hash function, one hyphen and the base64-encoded hash sum.
+#
+Fingerprint = true
+
+# Output style for /assets/sass/toc.scss. 
+# Valid options are nested, expanded, compact and compressed
+#
+SassOutput = 'compact'
+
+# Whether to minify the Javascript file generated from
+# /assets/js/toc.js
+#
+MinifyScript = false
+
+# Theme version, printed to HTML comment when the plugin loads.
+#
+Version = '1.0.8'

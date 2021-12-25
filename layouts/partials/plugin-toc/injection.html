@@ -5,19 +5,18 @@
 
 {{- with .Scratch.Get "plugin-toc.Parameters" -}}
 
-{{- if .DebugPrint -}}
+{{- if .Config.DebugPrint -}}
 {{- printf "\n<!--\nplugin-toc.Parameters:\n%s\n-->" (jsonify .) | safeHTML -}}
 {{- end -}}
 
-{{- if (and (eq $.Type "post") (gt $.WordCount .MinWordCount)) -}}
-
-{{- with .Build -}}
+{{- if (and (eq $.Type "post") (gt $.WordCount .Config.MinWordCount)) -}}
 
 {{- /* 
   Insert the plugin version and build time 
   */ -}}
 {{- $time := (time (sub now.Unix 28800)).Format "Jan 2 at 15:04" -}}
-{{ printf "\n<!-- Table of Contents v1.0.7 (built on %s) -->\n" $time | safeHTML }}
+{{- $version := .Config.Version -}}
+{{ printf "\n<!-- Table of Contents v%s (built on %s) -->\n" $version $time | safeHTML }}
 
 {{- $source_dir := "js/plugin-toc/" -}}
 {{- $template_name := "toc.js" -}}
@@ -25,8 +24,8 @@
 {{- $target := path.Join "assets" $source -}}
 
 {{- $script := resources.Get $source | resources.ExecuteAsTemplate $target $ -}}
-{{- if .MinifyScript }}{{ $script = $script | minify }}{{ end -}}
-{{- if .Fingerprint }}{{ $script = $script | fingerprint }}{{ end -}}
+{{- if .Config.MinifyScript }}{{ $script = $script | minify }}{{ end -}}
+{{- if .Config.Fingerprint }}{{ $script = $script | fingerprint }}{{ end -}}
 
 {{- print "\n" -}}
 <script src="{{ $script.Permalink }}"></script>
@@ -38,14 +37,13 @@
 {{- $style := resources.Get $source | resources.ExecuteAsTemplate $target $ -}} 
 
 {{- $target = $target | replaceRE "sass|scss" "css" -}}
-{{- $options := dict "targetPath" $target  "outputStyle" .SassOutput -}}
+{{- $options := dict "targetPath" $target  "outputStyle" .Config.SassOutput -}}
 {{- $style = $style | toCSS $options -}}
 
-{{- if .Fingerprint }}{{ $style = $style | fingerprint }}{{ end -}}
+{{- if .Config.Fingerprint }}{{ $style = $style | fingerprint }}{{ end -}}
 
 {{- print "\n" -}}
 <link rel="stylesheet" href="{{ $style.Permalink }}">
 {{ end -}}
 
-{{- end -}}
 {{- end }}
