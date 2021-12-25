@@ -52,6 +52,7 @@ button#{{ .Specifiers.ToggleID }} {
   flex-direction: column;
   background-clip: padding-box;
   outline: 0;
+  {{ with .Style.TOC }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
 
   &.{{ .Specifiers.OffscreenClassName }} {
     z-index: 1045;
@@ -112,16 +113,16 @@ button#{{ .Specifiers.ToggleID }} {
         {{ with .Style.Entry }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
       
         &.{{ .Specifiers.LevelClassNamePrefix }}2 {
-          margin-left: $level-indent * 1;
+          @include margin-left($level-indent * 1);
         }
         &.{{ .Specifiers.LevelClassNamePrefix }}3 {
-          margin-left: $level-indent * 2;
+          @include margin-left($level-indent * 2);
         }
         &.{{ .Specifiers.LevelClassNamePrefix }}4 {
-          margin-left: $level-indent * 3;
+          @include margin-left($level-indent * 3);
         }
         &.{{ .Specifiers.LevelClassNamePrefix }}5 {
-          margin-left: $level-indent * 4;
+          @include margin-left($level-indent * 4);
         }
     
         .{{ .Specifiers.SectionNumberClassName }} {
@@ -141,7 +142,7 @@ button#{{ .Specifiers.ToggleID }} {
 {{ end }}
 
 {{ define "wrap-content" }}
-{{ $pattern := `font-size:\w*([^;]+)` }}
-{{ $replacement := `@include font-size($1)` }}
+{{ $pattern := `(font-size|padding|padding-top|padding-right|padding-bottom|padding-left|margin|margin-top|margin-right|margin-bottom|margin-left):\w*([^;]+)` }}
+{{ $replacement := `@include $1($2)` }}
 {{ replaceRE $pattern $replacement . }}
 {{ end }}

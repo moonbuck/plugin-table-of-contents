@@ -43,6 +43,7 @@
 {{- $Style_Title := "" -}}
 {{- $Style_CloseButton := "" -}}
 {{- $Style_Body := "" -}}
+{{- $Style_Entry := "" -}}
 {{- $Style_EntrySection := "" -}}
 {{- $Style_EntryLink := "" -}}
 {{- $Style_Backdrop := "" -}}
@@ -159,6 +160,9 @@
 {{- end -}}
 {{- with .Style.Body -}}
 {{- $Style_Body = . -}}
+{{- end -}}
+{{- with .Style.Entry -}}
+{{- $Style_Entry = . -}}
 {{- end -}}
 {{- with .Style.EntrySection -}}
 {{- $Style_EntrySection = . -}}
@@ -295,6 +299,9 @@
 {{- with .Style.Body -}}
 {{- $Style_Body = . -}}
 {{- end -}}
+{{- with .Style.Entry -}}
+{{- $Style_Entry = . -}}
+{{- end -}}
 {{- with .Style.EntrySection -}}
 {{- $Style_EntrySection = . -}}
 {{- end -}}
@@ -338,7 +345,7 @@
 {{- $Style_Variables := dict "TOCWidth" $Style_Variables_TOCWidth "LevelIndent" $Style_Variables_LevelIndent "BackdropOpacity" $Style_Variables_BackdropOpacity -}}
 
 {{- /* Style */ -}}
-{{- $Style := dict "TOC" $Style_TOC "Header" $Style_Header "Title" $Style_Title "CloseButton" $Style_CloseButton "Body" $Style_Body "EntrySection" $Style_EntrySection "EntryLink" $Style_EntryLink "Backdrop" $Style_Backdrop "Toggle" $Style_Toggle "SectionNumber" $Style_SectionNumber "Variables" $Style_Variables -}}
+{{- $Style := dict "TOC" $Style_TOC "Header" $Style_Header "Title" $Style_Title "CloseButton" $Style_CloseButton "Body" $Style_Body "Entry" $Style_Entry "EntrySection" $Style_EntrySection "EntryLink" $Style_EntryLink "Backdrop" $Style_Backdrop "Toggle" $Style_Toggle "SectionNumber" $Style_SectionNumber "Variables" $Style_Variables -}}
 
 {{- /* Specifiers */ -}}
 {{- $Specifiers := dict "BackdropID" $Specifiers_BackdropID "ContainerID" $Specifiers_ContainerID "HeaderID" $Specifiers_HeaderID "TitleID" $Specifiers_TitleID "CloseButtonID" $Specifiers_CloseButtonID "BodyID" $Specifiers_BodyID "ToggleID" $Specifiers_ToggleID "LevelClassNamePrefix" $Specifiers_LevelClassNamePrefix "FadeClassName" $Specifiers_FadeClassName "ShowClassName" $Specifiers_ShowClassName "OffscreenClassName" $Specifiers_OffscreenClassName "TOCEntryClassName" $Specifiers_TOCEntryClassName "SectionNumberClassName" $Specifiers_SectionNumberClassName "InjectedSectionNumberClassName" $Specifiers_InjectedSectionNumberClassName -}}
