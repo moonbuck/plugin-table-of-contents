@@ -75,6 +75,7 @@ ToggleText = 'Table of Contents'
 #
 SectionNumbers = true
 
-# Whether to inject generated section numbers into the original post headings.
+# Whether to inject generated section numbers into the original 
+# post headings.
 #
 InjectSectionNumbers = true

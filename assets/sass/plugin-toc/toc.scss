@@ -15,7 +15,7 @@ $backdrop-opacity: {{ .Style.Variables.BackdropOpacity }};
   left: 0;
   width: 100vw;
   height: 100vh;
-  {{ with .Style.Backdrop }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
+  {{ with .Style.Backdrop }}@include parameter { {{ template "rfs-wrap" . }} }{{ end }}
 
   // Fade backdrop and lower to prevent click handling.
   &.{{ .Specifiers.FadeClassName }} { 
@@ -31,14 +31,14 @@ $backdrop-opacity: {{ .Style.Variables.BackdropOpacity }};
 }
 
 span.{{ .Specifiers.InjectedSectionNumberClassName }} {
- {{ with .Style.SectionNumber }}@include parameter { {{ template "wrap-content" . }} }{{ end }} 
+ {{ with .Style.SectionNumber }}@include parameter { {{ template "rfs-wrap" . }} }{{ end }} 
 }
 
 button#{{ .Specifiers.ToggleID }} {
   border: none;
   border-radius: 0;
   white-space: nowrap;
-  {{ with .Style.Toggle }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
+  {{ with .Style.Toggle }}@include parameter { {{ template "rfs-wrap" . }} }{{ end }}
 }
 
 #{{ .Specifiers.ContainerID }} {
@@ -52,7 +52,7 @@ button#{{ .Specifiers.ToggleID }} {
   flex-direction: column;
   background-clip: padding-box;
   outline: 0;
-  {{ with .Style.TOC }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
+  {{ with .Style.TOC }}@include parameter { {{ template "rfs-wrap" . }} }{{ end }}
 
   &.{{ .Specifiers.OffscreenClassName }} {
     z-index: 1045;
@@ -68,10 +68,10 @@ button#{{ .Specifiers.ToggleID }} {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    {{ with .Style.Header }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
+    {{ with .Style.Header }}@include parameter { {{ template "rfs-wrap" . }} }{{ end }}
     
     h2#{{ .Specifiers.TitleID }} {
-      {{ with .Style.Title }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
+      {{ with .Style.Title }}@include parameter { {{ template "rfs-wrap" . }} }{{ end }}
     }
     
     button#{{ .Specifiers.CloseButtonID }} {
@@ -81,7 +81,7 @@ button#{{ .Specifiers.ToggleID }} {
       background: transparent;
       border: none;
       visibility: hidden;
-      {{ with .Style.CloseButton }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
+      {{ with .Style.CloseButton }}@include parameter { {{ template "rfs-wrap" . }} }{{ end }}
       
       @media (max-width: $toc-width + 50) {
         visibility: visible;
@@ -105,12 +105,12 @@ button#{{ .Specifiers.ToggleID }} {
     overflow-y: auto;
     display: flex;
     flex-direction: column; 
-    {{ with .Style.Body }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
+    {{ with .Style.Body }}@include parameter { {{ template "rfs-wrap" . }} }{{ end }}
     
     .{{ .Specifiers.TOCEntryClassName }} {
         display: flex;
         align-items: baseline;
-        {{ with .Style.Entry }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
+        {{ with .Style.Entry }}@include parameter { {{ template "rfs-wrap" . }} }{{ end }}
       
         &.{{ .Specifiers.LevelClassNamePrefix }}2 {
           @include margin-left($level-indent * 1);
@@ -126,11 +126,11 @@ button#{{ .Specifiers.ToggleID }} {
         }
     
         .{{ .Specifiers.SectionNumberClassName }} {
-          {{ with .Style.EntrySection }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
+          {{ with .Style.EntrySection }}@include parameter { {{ template "rfs-wrap" . }} }{{ end }}
         }
       
         a {
-          {{ with .Style.EntryLink }}@include parameter { {{ template "wrap-content" . }} }{{ end }}
+          {{ with .Style.EntryLink }}@include parameter { {{ template "rfs-wrap" . }} }{{ end }}
         }
       
     } // .Specifiers.TOCEntryClassName
@@ -141,7 +141,7 @@ button#{{ .Specifiers.ToggleID }} {
 
 {{ end }}
 
-{{ define "wrap-content" }}
+{{ define "rfs-wrap" }}
 {{ $pattern := `(font-size|padding|padding-top|padding-right|padding-bottom|padding-left|margin|margin-top|margin-right|margin-bottom|margin-left):\w*([^;]+)` }}
 {{ $replacement := `@include $1($2)` }}
 {{ replaceRE $pattern $replacement . }}
