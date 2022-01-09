@@ -7,189 +7,71 @@
   Initialize variables with default parameter values
   to ensure every parameter has a map entry. 
   ***************************************************/ -}}
+{{- $Config := dict
+  "Version" ""
+  "MinWordCount" 400
+  "DebugPrint" false
+  "Fingerprint" true
+  "SassOutput" "compact"
+  "MinifyScript" false
+  "MinSections" 2
+  "SourceSandbox" "#post-body"
+  "ContainerParent" "body"
+  "TitleText" "Table of Contents"
+  "ToggleParent" "#tog-toggle-container"
+  "ToggleText" "Table of Contents"
+  "SectionNumbers" true
+  "InjectSectionNumbers" true
+  -}}
   
-{{- $Config_Version := "" -}}
-{{- $Config_MinWordCount := 400 -}}
-{{- $Config_DebugPrint := false -}}
-{{- $Config_Fingerprint := true -}}
-{{- $Config_SassOutput := "compact" -}}
-{{- $Config_MinifyScript := false -}}
-{{- $Config_MinSections := 2 -}}
-{{- $Config_SourceSandbox := "#post-body" -}}
-{{- $Config_ContainerParent := "body" -}}
-{{- $Config_TitleText := "Table of Contents" -}}
-{{- $Config_ToggleParent := "#tog-toggle-container" -}}
-{{- $Config_ToggleText := "Table of Contents" -}}
-{{- $Config_SectionNumbers := true -}}
-{{- $Config_InjectSectionNumbers := true -}}
-
-{{- $Specifiers_BackdropID := "toc-backdrop" -}}
-{{- $Specifiers_ContainerID := "toc-container" -}}
-{{- $Specifiers_HeaderID := "toc-header" -}}
-{{- $Specifiers_TitleID := "toc-title" -}}
-{{- $Specifiers_CloseButtonID := "toc-close-button" -}}
-{{- $Specifiers_BodyID := "toc-body" -}}
-{{- $Specifiers_ToggleID := "toc-toggle" -}}
-{{- $Specifiers_LevelClassNamePrefix := "toc-level-" -}}
-{{- $Specifiers_FadeClassName := "fade" -}}
-{{- $Specifiers_ShowClassName := "show" -}}
-{{- $Specifiers_OffscreenClassName := "offscreen" -}}
-{{- $Specifiers_TOCEntryClassName := "toc-entry" -}}
-{{- $Specifiers_SectionNumberClassName := "section-number" -}}
-{{- $Specifiers_InjectedSectionNumberClassName := "injected-section-number" -}}
-
-{{- $Style_TOC := "" -}}
-{{- $Style_Header := "" -}}
-{{- $Style_Title := "" -}}
-{{- $Style_CloseButton := "" -}}
-{{- $Style_Body := "" -}}
-{{- $Style_Entry := "" -}}
-{{- $Style_EntrySection := "" -}}
-{{- $Style_EntryLink := "" -}}
-{{- $Style_Backdrop := "" -}}
-{{- $Style_Toggle := "" -}}
-{{- $Style_SectionNumber := "" -}}
-{{- $Style_Variables_TOCWidth := 400 -}}
-{{- $Style_Variables_LevelIndent := "4px" -}}
-{{- $Style_Variables_BackdropOpacity := 0.5 -}}
-
+{{- $Specifiers := dict
+  "BackdropID" "toc-backdrop"
+  "ContainerID" "toc-container"
+  "HeaderID" "toc-header"
+  "TitleID" "toc-title"
+  "CloseButtonID" "toc-close-button"
+  "BodyID" "toc-body"
+  "ToggleID" "toc-toggle"
+  "LevelClassNamePrefix" "toc-level-"
+  "FadeClassName" "fade"
+  "ShowClassName" "show"
+  "OffscreenClassName" "offscreen"
+  "TOCEntryClassName" "toc-entry"
+  "SectionNumberClassName" "section-number"
+  "InjectedSectionNumberClassName" "injected-section-number"
+  -}}
+  
+{{- $Style := dict
+  "TOC" ""
+  "Header" ""
+  "Title" ""
+  "CloseButton" ""
+  "Body" ""
+  "Entry" ""
+  "EntrySection" ""
+  "EntryLink" ""
+  "Backdrop" ""
+  "Toggle" ""
+  "SectionNumber" ""
+  "Variables" (dict
+      "TOCWidth" 400
+      "LevelIndent" "4px"
+      "BackdropOpacity" 0.5)
+  -}}
+  
+{{- $Parameters := dict
+  "Config" $Config 
+  "Specifiers" $Specifiers
+  "Style" $Style -}}
+  
 {{- /************************************************
   Override the default parameter values with values
   found in the plugin data files.
   ***************************************************/ -}}
 
 {{- with site.Data.plugin_toc -}}
-
-{{- with .Config.Version -}}
-{{- $Config_Version = . -}}
+{{- $Parameters = merge $Parameters . -}}
 {{- end -}}
-{{- with .Config.MinWordCount -}}
-{{- $Config_MinWordCount = . -}}
-{{- end -}}
-{{- if (isset .Config "DebugPrint") -}}
-{{- $Config_DebugPrint = .Config.DebugPrint -}}
-{{- end -}}
-{{- if (isset .Config "Fingerprint") -}}
-{{- $Config_Fingerprint = .Config.Fingerprint -}}
-{{- end -}}
-{{- with .Config.SassOutput -}}
-{{- $Config_SassOutput = . -}}
-{{- end -}}
-{{- if (isset .Config "MinifyScript") -}}
-{{- $Config_MinifyScript = .Config.MinifyScript -}}
-{{- end -}}
-{{- with .Config.MinSections -}}
-{{- $Config_MinSections = . -}}
-{{- end -}}
-{{- with .Config.SourceSandbox -}}
-{{- $Config_SourceSandbox = . -}}
-{{- end -}}
-{{- with .Config.ContainerParent -}}
-{{- $Config_ContainerParent = . -}}
-{{- end -}}
-{{- with .Config.TitleText -}}
-{{- $Config_TitleText = . -}}
-{{- end -}}
-{{- with .Config.ToggleParent -}}
-{{- $Config_ToggleParent = . -}}
-{{- end -}}
-{{- with .Config.ToggleText -}}
-{{- $Config_ToggleText = . -}}
-{{- end -}}
-{{- if (isset .Config "SectionNumbers") -}}
-{{- $Config_SectionNumbers = .Config.SectionNumbers -}}
-{{- end -}}
-{{- if (isset .Config "InjectSectionNumbers") -}}
-{{- $Config_InjectSectionNumbers = .Config.InjectSectionNumbers -}}
-{{- end -}}
-
-{{- with .Specifiers.BackdropID -}}
-{{- $Specifiers_BackdropID = . -}}
-{{- end -}}
-{{- with .Specifiers.ContainerID -}}
-{{- $Specifiers_ContainerID = . -}}
-{{- end -}}
-{{- with .Specifiers.HeaderID -}}
-{{- $Specifiers_HeaderID = . -}}
-{{- end -}}
-{{- with .Specifiers.TitleID -}}
-{{- $Specifiers_TitleID = . -}}
-{{- end -}}
-{{- with .Specifiers.CloseButtonID -}}
-{{- $Specifiers_CloseButtonID = . -}}
-{{- end -}}
-{{- with .Specifiers.BodyID -}}
-{{- $Specifiers_BodyID = . -}}
-{{- end -}}
-{{- with .Specifiers.ToggleID -}}
-{{- $Specifiers_ToggleID = . -}}
-{{- end -}}
-{{- with .Specifiers.LevelClassNamePrefix -}}
-{{- $Specifiers_LevelClassNamePrefix = . -}}
-{{- end -}}
-{{- with .Specifiers.FadeClassName -}}
-{{- $Specifiers_FadeClassName = . -}}
-{{- end -}}
-{{- with .Specifiers.ShowClassName -}}
-{{- $Specifiers_ShowClassName = . -}}
-{{- end -}}
-{{- with .Specifiers.OffscreenClassName -}}
-{{- $Specifiers_OffscreenClassName = . -}}
-{{- end -}}
-{{- with .Specifiers.TOCEntryClassName -}}
-{{- $Specifiers_TOCEntryClassName = . -}}
-{{- end -}}
-{{- with .Specifiers.SectionNumberClassName -}}
-{{- $Specifiers_SectionNumberClassName = . -}}
-{{- end -}}
-{{- with .Specifiers.InjectedSectionNumberClassName -}}
-{{- $Specifiers_InjectedSectionNumberClassName = . -}}
-{{- end -}}
-
-{{- with .Style.TOC -}}
-{{- $Style_TOC = . -}}
-{{- end -}}
-{{- with .Style.Header -}}
-{{- $Style_Header = . -}}
-{{- end -}}
-{{- with .Style.Title -}}
-{{- $Style_Title = . -}}
-{{- end -}}
-{{- with .Style.CloseButton -}}
-{{- $Style_CloseButton = . -}}
-{{- end -}}
-{{- with .Style.Body -}}
-{{- $Style_Body = . -}}
-{{- end -}}
-{{- with .Style.Entry -}}
-{{- $Style_Entry = . -}}
-{{- end -}}
-{{- with .Style.EntrySection -}}
-{{- $Style_EntrySection = . -}}
-{{- end -}}
-{{- with .Style.EntryLink -}}
-{{- $Style_EntryLink = . -}}
-{{- end -}}
-{{- with .Style.Backdrop -}}
-{{- $Style_Backdrop = . -}}
-{{- end -}}
-{{- with .Style.Toggle -}}
-{{- $Style_Toggle = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber -}}
-{{- $Style_SectionNumber = . -}}
-{{- end -}}
-{{- with .Style.Variables.TOCWidth -}}
-{{- $Style_Variables_TOCWidth = . -}}
-{{- end -}}
-{{- with .Style.Variables.LevelIndent -}}
-{{- $Style_Variables_LevelIndent = . -}}
-{{- end -}}
-{{- with .Style.Variables.BackdropOpacity -}}
-{{- $Style_Variables_BackdropOpacity = . -}}
-{{- end -}}
-
-{{- end -}} {{- /* with site.Data.plugin_toc */ -}}
 
 {{- /**********************************************
   Override the default/plugin parameter values with
@@ -197,164 +79,8 @@
   *************************************************/ -}}
 
 {{- with (index site.Data "plugin-toc") -}}
-
-{{- with .Config.Version -}}
-{{- $Config_Version = . -}}
+{{- $Parameters = merge $Parameters . -}}
 {{- end -}}
-{{- with .Config.MinWordCount -}}
-{{- $Config_MinWordCount = . -}}
-{{- end -}}
-{{- if (isset .Config "DebugPrint") -}}
-{{- $Config_DebugPrint = .Config.DebugPrint -}}
-{{- end -}}
-{{- if (isset .Config "Fingerprint") -}}
-{{- $Config_Fingerprint = .Config.Fingerprint -}}
-{{- end -}}
-{{- with .Config.SassOutput -}}
-{{- $Config_SassOutput = . -}}
-{{- end -}}
-{{- if (isset .Config "MinifyScript") -}}
-{{- $Config_MinifyScript = .Config.MinifyScript -}}
-{{- end -}}
-{{- with .Config.MinSections -}}
-{{- $Config_MinSections = . -}}
-{{- end -}}
-{{- with .Config.SourceSandbox -}}
-{{- $Config_SourceSandbox = . -}}
-{{- end -}}
-{{- with .Config.ContainerParent -}}
-{{- $Config_ContainerParent = . -}}
-{{- end -}}
-{{- with .Config.TitleText -}}
-{{- $Config_TitleText = . -}}
-{{- end -}}
-{{- with .Config.ToggleParent -}}
-{{- $Config_ToggleParent = . -}}
-{{- end -}}
-{{- with .Config.ToggleText -}}
-{{- $Config_ToggleText = . -}}
-{{- end -}}
-{{- if (isset .Config "SectionNumbers") -}}
-{{- $Config_SectionNumbers = .Config.SectionNumbers -}}
-{{- end -}}
-{{- if (isset .Config "InjectSectionNumbers") -}}
-{{- $Config_InjectSectionNumbers = .Config.InjectSectionNumbers -}}
-{{- end -}}
-
-{{- with .Specifiers.BackdropID -}}
-{{- $Specifiers_BackdropID = . -}}
-{{- end -}}
-{{- with .Specifiers.ContainerID -}}
-{{- $Specifiers_ContainerID = . -}}
-{{- end -}}
-{{- with .Specifiers.HeaderID -}}
-{{- $Specifiers_HeaderID = . -}}
-{{- end -}}
-{{- with .Specifiers.TitleID -}}
-{{- $Specifiers_TitleID = . -}}
-{{- end -}}
-{{- with .Specifiers.CloseButtonID -}}
-{{- $Specifiers_CloseButtonID = . -}}
-{{- end -}}
-{{- with .Specifiers.BodyID -}}
-{{- $Specifiers_BodyID = . -}}
-{{- end -}}
-{{- with .Specifiers.ToggleID -}}
-{{- $Specifiers_ToggleID = . -}}
-{{- end -}}
-{{- with .Specifiers.LevelClassNamePrefix -}}
-{{- $Specifiers_LevelClassNamePrefix = . -}}
-{{- end -}}
-{{- with .Specifiers.FadeClassName -}}
-{{- $Specifiers_FadeClassName = . -}}
-{{- end -}}
-{{- with .Specifiers.ShowClassName -}}
-{{- $Specifiers_ShowClassName = . -}}
-{{- end -}}
-{{- with .Specifiers.OffscreenClassName -}}
-{{- $Specifiers_OffscreenClassName = . -}}
-{{- end -}}
-{{- with .Specifiers.TOCEntryClassName -}}
-{{- $Specifiers_TOCEntryClassName = . -}}
-{{- end -}}
-{{- with .Specifiers.SectionNumberClassName -}}
-{{- $Specifiers_SectionNumberClassName = . -}}
-{{- end -}}
-{{- with .Specifiers.InjectedSectionNumberClassName -}}
-{{- $Specifiers_InjectedSectionNumberClassName = . -}}
-{{- end -}}
-
-{{- with .Style.TOC -}}
-{{- $Style_TOC = . -}}
-{{- end -}}
-{{- with .Style.Header -}}
-{{- $Style_Header = . -}}
-{{- end -}}
-{{- with .Style.Title -}}
-{{- $Style_Title = . -}}
-{{- end -}}
-{{- with .Style.CloseButton -}}
-{{- $Style_CloseButton = . -}}
-{{- end -}}
-{{- with .Style.Body -}}
-{{- $Style_Body = . -}}
-{{- end -}}
-{{- with .Style.Entry -}}
-{{- $Style_Entry = . -}}
-{{- end -}}
-{{- with .Style.EntrySection -}}
-{{- $Style_EntrySection = . -}}
-{{- end -}}
-{{- with .Style.EntryLink -}}
-{{- $Style_EntryLink = . -}}
-{{- end -}}
-{{- with .Style.Backdrop -}}
-{{- $Style_Backdrop = . -}}
-{{- end -}}
-{{- with .Style.Toggle -}}
-{{- $Style_Toggle = . -}}
-{{- end -}}
-{{- with .Style.SectionNumber -}}
-{{- $Style_SectionNumber = . -}}
-{{- end -}}
-{{- with .Style.Variables.TOCWidth -}}
-{{- $Style_Variables_TOCWidth = . -}}
-{{- end -}}
-{{- with .Style.Variables.LevelIndent -}}
-{{- $Style_Variables_LevelIndent = . -}}
-{{- end -}}
-{{- with .Style.Variables.BackdropOpacity -}}
-{{- $Style_Variables_BackdropOpacity = . -}}
-{{- end -}}
-
-{{- end -}} {{- /* with (index site.Data "plugin-toc") */ -}}
-
-{{- /**************************************************
-  Construct the intermediate maps (mostly for clarity).
-  
-  The map inserted into the page scratch will have the 
-  following key structure:
-  
-  Config
-  Specifiers
-  Style
-    Variables
- *********************************************************/ -}}
-  
-{{- /* Style.Variables */ -}}
-{{- $Style_Variables := dict "TOCWidth" $Style_Variables_TOCWidth "LevelIndent" $Style_Variables_LevelIndent "BackdropOpacity" $Style_Variables_BackdropOpacity -}}
-
-{{- /* Style */ -}}
-{{- $Style := dict "TOC" $Style_TOC "Header" $Style_Header "Title" $Style_Title "CloseButton" $Style_CloseButton "Body" $Style_Body "Entry" $Style_Entry "EntrySection" $Style_EntrySection "EntryLink" $Style_EntryLink "Backdrop" $Style_Backdrop "Toggle" $Style_Toggle "SectionNumber" $Style_SectionNumber "Variables" $Style_Variables -}}
-
-{{- /* Specifiers */ -}}
-{{- $Specifiers := dict "BackdropID" $Specifiers_BackdropID "ContainerID" $Specifiers_ContainerID "HeaderID" $Specifiers_HeaderID "TitleID" $Specifiers_TitleID "CloseButtonID" $Specifiers_CloseButtonID "BodyID" $Specifiers_BodyID "ToggleID" $Specifiers_ToggleID "LevelClassNamePrefix" $Specifiers_LevelClassNamePrefix "FadeClassName" $Specifiers_FadeClassName "ShowClassName" $Specifiers_ShowClassName "OffscreenClassName" $Specifiers_OffscreenClassName "TOCEntryClassName" $Specifiers_TOCEntryClassName "SectionNumberClassName" $Specifiers_SectionNumberClassName "InjectedSectionNumberClassName" $Specifiers_InjectedSectionNumberClassName -}}
-
-{{- /* Config */ -}}
-{{- $Config := dict "Version" $Config_Version "MinWordCount" $Config_MinWordCount "DebugPrint" $Config_DebugPrint "Fingerprint" $Config_Fingerprint "SassOutput" $Config_SassOutput "MinifyScript" $Config_MinifyScript "MinSections" $Config_MinSections "SourceSandbox" $Config_SourceSandbox "ContainerParent" $Config_ContainerParent "TitleText" $Config_TitleText "ToggleParent" $Config_ToggleParent "ToggleText" $Config_ToggleText "SectionNumbers" $Config_SectionNumbers "InjectSectionNumbers" $Config_InjectSectionNumbers -}}
-
-{{- /* Parameters */ -}}
-{{- $Parameters := dict "Config" $Config "Specifiers" $Specifiers "Style" $Style -}}
 
 {{- /********************************************
   Insert the parameter map into the page scratch.
