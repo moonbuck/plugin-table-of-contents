@@ -2,7 +2,7 @@
 
 @mixin parameter { @content; }
 
-{{ with .Scratch.Get "plugin-toc.Parameters" }}
+{{ with .Scratch.Get "plugin-table-of-contents.Parameters" }}
 
 /// Variables
 $toc-width: {{ .Style.Variables.TOCWidth }}px;

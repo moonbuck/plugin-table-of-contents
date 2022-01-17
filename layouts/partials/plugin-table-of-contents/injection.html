@@ -3,12 +3,12 @@
 {{- /* 
   Load the config file values into the scratch 
   */ -}}
-{{- partial "plugin-toc/load-parameters.html" . -}}
+{{- partial "plugin-table-of-contents/load-parameters.html" . -}}
 
-{{- with .Scratch.Get "plugin-toc.Parameters" -}}
+{{- with .Scratch.Get "plugin-table-of-contents.Parameters" -}}
 
 {{- if .Config.DebugPrint -}}
-{{- printf "\n<!--\nplugin-toc.Parameters:\n%s\n-->" (jsonify .) | safeHTML -}}
+{{- printf "\n<!--\nplugin-table-of-contents.Parameters:\n%s\n-->" (jsonify .) | safeHTML -}}
 {{- end -}}
 
 {{- /* 
@@ -18,7 +18,7 @@
 {{- $version := .Config.Version -}}
 {{ printf "\n<!-- Table of Contents v%s (built on %s) -->\n" $version $time | safeHTML }}
 
-{{- $source_dir := "js/plugin-toc/" -}}
+{{- $source_dir := "js/plugin-table-of-contents/" -}}
 {{- $template_name := "toc.js" -}}
 {{- $source := path.Join $source_dir $template_name -}}
 {{- $target := path.Join "assets" $source -}}
@@ -30,7 +30,7 @@
 {{- print "\n" -}}
 <script src="{{ $script.Permalink }}"></script>
 
-{{- $source_dir = "sass/plugin-toc/" -}}
+{{- $source_dir = "sass/plugin-table-of-contents/" -}}
 {{- $template_name = "toc.scss" -}}
 {{- $source = path.Join $source_dir $template_name -}}
 {{- $target := path.Join "assets" $source -}}

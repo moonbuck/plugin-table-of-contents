@@ -1,4 +1,4 @@
-{{ with .Scratch.Get "plugin-toc.Parameters" -}}
+{{ with .Scratch.Get "plugin-table-of-contents.Parameters" -}}
 
 /*
   Symbols used for property storage.

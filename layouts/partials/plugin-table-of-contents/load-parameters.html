@@ -78,7 +78,7 @@
   values found in the theme data file.
   *************************************************/ -}}
 
-{{- with (index site.Data "plugin-toc") -}}
+{{- with (index site.Data "plugin-table-of-contents") -}}
 {{- $Parameters = merge $Parameters . -}}
 {{- end -}}
 
@@ -86,4 +86,4 @@
   Insert the parameter map into the page scratch.
   ***********************************************/ -}}
   
-{{- .Scratch.Set "plugin-toc.Parameters" $Parameters -}}
+{{- .Scratch.Set "plugin-table-of-contents.Parameters" $Parameters -}}
