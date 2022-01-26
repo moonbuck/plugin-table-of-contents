@@ -1,5 +1,5 @@
 {
-    "version": "2.0.1",
+    "version": "2.0.2",
     "title": "Moondeer's Table of Contents",
     "description": "A plugin for generating a Table of Contents out of a post's headings.",
     "includes": ["plugin-table-of-contents/injection.html"]

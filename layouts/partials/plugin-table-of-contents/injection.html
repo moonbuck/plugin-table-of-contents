@@ -1,8 +1,6 @@
 {{- if (and (eq .Type "post") (.HasShortcode "toc")) -}}
 
-{{- /* 
-  Load the config file values into the scratch 
-  */ -}}
+{{/* Load the config file values into the scratch */}}
 {{- partial "plugin-table-of-contents/load-parameters.html" . -}}
 
 {{- with .Scratch.Get "plugin-table-of-contents.Parameters" -}}
@@ -11,9 +9,7 @@
 {{- printf "\n<!--\nplugin-table-of-contents.Parameters:\n%s\n-->" (jsonify .) | safeHTML -}}
 {{- end -}}
 
-{{- /* 
-  Insert the plugin version and build time 
-  */ -}}
+{{/* Insert the plugin version and build time */}}
 {{- $time := (time (sub now.Unix 28800)).Format "Jan 2 at 15:04" -}}
 {{- $version := .Config.Version -}}
 {{ printf "\n<!-- Table of Contents v%s (built on %s) -->\n" $version $time | safeHTML }}
@@ -28,7 +24,9 @@
 {{- if .Config.Fingerprint }}{{ $script = $script | fingerprint }}{{ end -}}
 
 {{- print "\n" -}}
-<script src="{{ $script.Permalink }}"></script>
+<script src="{{ $script.Permalink }}"
+{{- if .Config.Fingerprint }} integrity="{{ $script.Data.Integrity }}"{{ end -}}
+></script>
 
 {{- $source_dir = "sass/plugin-table-of-contents/" -}}
 {{- $template_name = "toc.scss" -}}
@@ -43,7 +41,9 @@
 {{- if .Config.Fingerprint }}{{ $style = $style | fingerprint }}{{ end -}}
 
 {{- print "\n" -}}
-<link rel="stylesheet" href="{{ $style.Permalink }}">
+<link rel="stylesheet" href="{{ $style.Permalink }}"
+{{- if .Config.Fingerprint }} integrity="{{ $style.Data.Integrity }}"{{ end -}}
+>
 {{ end -}}
 
 {{- end }}
