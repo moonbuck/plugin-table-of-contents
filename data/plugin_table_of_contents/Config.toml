@@ -3,11 +3,7 @@
 
 # Plugin version, printed to HTML comment when the plugin loads.
 #
-Version = '2.0.3'
-
-# Minimum word count for a post page to trigger TOC creation.
-#
-MinWordCount = 400
+Version = '2.0.4'
 
 # Whether to print HTML comments for debugging purposes.
 #
@@ -32,10 +28,6 @@ MinifyScript = false
 
 # Parameters controlling the generation of the table of contents.
 #################################################################
-
-# Minimum number of top level sections to insert the TOC.
-#
-MinSections = 2
 
 # Selector used to identify the HTML element whose child headings shall
 # be eligible for inclusion in the table of contents.

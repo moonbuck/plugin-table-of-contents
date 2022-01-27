@@ -1,7 +1,9 @@
 {{- if (and (eq .Type "post") (.HasShortcode "toc")) -}}
 
 {{/* Load the config file values into the scratch */}}
-{{- partial "plugin-table-of-contents/load-parameters.html" . -}}
+{{- if not (.Scratch.Get "plugin-table-of-contents.Parameters") -}}
+  {{- partial "plugin-table-of-contents/load-parameters.html" . -}}
+{{- end -}}
 
 {{- with .Scratch.Get "plugin-table-of-contents.Parameters" -}}
 

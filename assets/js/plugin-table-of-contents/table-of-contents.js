@@ -23,10 +23,6 @@ const ALWAYS_OFFSCREEN = true;
   Use the DOMContentLoaded event as the hook for inserting the TOC.
 */
 document.addEventListener('DOMContentLoaded', () => {
-
-  
-  let sectionCount = document.querySelectorAll(`{{ .Config.SourceSandbox }} h2[id]`).length
-  if (sectionCount < {{ .Config.MinSections }}) { return; }
   
   // Establish a parent for the TOC container.
   let parent = document.querySelector('{{ .Config.ContainerParent }}') ?? document.body;
