@@ -3,7 +3,7 @@
 
 # Plugin version, printed to HTML comment when the plugin loads.
 #
-Version = '2.0.2'
+Version = '2.0.3'
 
 # Minimum word count for a post page to trigger TOC creation.
 #

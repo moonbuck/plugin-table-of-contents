@@ -15,7 +15,7 @@
 {{ printf "\n<!-- Table of Contents v%s (built on %s) -->\n" $version $time | safeHTML }}
 
 {{- $source_dir := "js/plugin-table-of-contents/" -}}
-{{- $template_name := "toc.js" -}}
+{{- $template_name := "table-of-contents.js" -}}
 {{- $source := path.Join $source_dir $template_name -}}
 {{- $target := path.Join "assets" $source -}}
 
@@ -29,9 +29,9 @@
 ></script>
 
 {{- $source_dir = "sass/plugin-table-of-contents/" -}}
-{{- $template_name = "toc.scss" -}}
+{{- $template_name = "table-of-contents.scss" -}}
 {{- $source = path.Join $source_dir $template_name -}}
-{{- $target := path.Join "assets" $source -}}
+{{- $target = path.Join "assets" $source -}}
 {{- $style := resources.Get $source | resources.ExecuteAsTemplate $target $ -}} 
 
 {{- $target = $target | replaceRE "sass|scss" "css" -}}
@@ -44,6 +44,7 @@
 <link rel="stylesheet" href="{{ $style.Permalink }}"
 {{- if .Config.Fingerprint }} integrity="{{ $style.Data.Integrity }}"{{ end -}}
 >
-{{ end -}}
+
+{{- end -}}
 
 {{- end }}
