@@ -1,6 +1,6 @@
 {
     "version": "2.0.4",
     "title": "Moondeer's Table of Contents",
-    "description": "A plugin for generating a Table of Contents out of a post's headings.",
+    "description": "A plugin for generating a Table of Contents out of a post's headings. A README is on the way. See the documented configuration files in the plugin's data directory for plugin parameters and feel free to holler at me with any questions.",
     "includes": ["plugin-table-of-contents/injection.html"]
   }
