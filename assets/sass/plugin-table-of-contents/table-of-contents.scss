@@ -59,6 +59,10 @@ button#{{ .Specifiers.ToggleID }} {
   border-radius: 0;
   white-space: nowrap;
   {{ with .Style.Toggle }}{{ template "rfs-wrap" . }}{{ end }}
+  
+  @media (max-width: $toc-width + 50) {
+    display: none;
+  }
 }
 
 #{{ .Specifiers.ContainerID }} {
